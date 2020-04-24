@@ -1,0 +1,31 @@
+#!/bin/bash
+
+
+#tr -cd "[:print:]" < /dev/urandom
+
+## more complex (not working) version
+function _tr_(){
+	tr -cd "[:print:]" < /dev/urandom | head -c$COLUMNS 
+}
+
+function _echo_(){
+	echo "$RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM $RANDOM" | head -c$COLUMNS
+}
+
+if [[ "$1" == "all" ]];
+then
+	while true;
+	do
+		_tr_ 
+		echo
+		_echo_
+	done
+elif [[ "$1" == "random" ]];
+then
+	_tr_  
+else
+	while true;
+	do
+		_echo_
+	done
+fi
