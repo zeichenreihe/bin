@@ -1,0 +1,66 @@
+#!/bin/bash
+#    touch_arduino - shell script to touch a ino file
+#    Copyright (C) 2020  Johannes Schmatz
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+YEAR="$(date +%Y)"
+AUTOR="<autor>"
+
+VIM="vim"
+
+cat > $1 <<EOF
+/*
+    <desc>
+    Copyright (C) $YEAR  $AUTOR
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// upload
+// $ arduino-cli compile -up /dev/ttyUSB0 -b arduino:avr:uno . 
+
+// includes
+#include <Arduino.h>
+
+// code
+void setup(){
+	pinMode(13, OUTPUT);
+}
+
+void loop(){
+	digitalWrite(13, HIGH);
+	delay(1000);
+	digitalWrite(13, LOW);
+	delay(1000);
+}
+
+// syntax
+// ${VIM}: ts=8 sts=8 sw=8 noet si syntax=arduino
+EOF
+
+# syntax
+# vim: ts=8 sts=8 sw=8 noet si syntax=bash

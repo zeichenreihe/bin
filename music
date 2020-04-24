@@ -1,0 +1,27 @@
+#!/bin/bash
+[[ "$1" == "-b" ]]&&band="$2" &&shift 2
+[[ "$band" == "" ]]&&band="queen"
+if [[ "$1" == "-a" ]];
+then
+	clear
+	echo "playing all titles from $band"
+	$MUSIC_PLAYER ~/$MUSIC_DIR/$band/* 2>/dev/null >/dev/null
+elif [[ "$1" == "-r" ]];
+then
+	clear
+	echo "playing all titles from $band randomly in loop"
+	while true;
+	do
+		$MUSIC_PLAYER ~/$MUSIC_DIR/$band/*  -shuffle 2>/dev/null >/dev/null
+	done
+else
+	clear
+	for song in $@
+	do
+		echo "$band"
+		echo "$song"
+		$MUSIC_PLAYER ~/$MUSIC_DIR/$band/$song 2>/dev/null >/dev/null
+		clear
+	done
+fi
+#EOF
