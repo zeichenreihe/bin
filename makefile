@@ -1,5 +1,4 @@
-#!/bin/bash
-#    script to update
+#    makefile for all somtimes needet things
 #    Copyright (C) 2020  Johannes Schmatz
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -15,40 +14,50 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function online_status(){
-	online="no"
-	[[ "$(wget http://42.org -O - -o /dev/null 2>/dev/null |head -1)" == "<HTML><HEAD>" ]]&&online="yes"
-}
+# network
+j: wlan update
 
-function wait_online(){
-	onepoint="no"
-	online_status
-	while [[ "$online" != "yes" ]];
-	do
-		sleep 1
-		online_status
-		onepoint="yes"
-		echo -n "."
-	done
-	if [[ $onepoint == "yes" ]]
-	then
-		echo
-	fi
-}
+wlan: 
+	sudo /usr/bin/wifi-menu
+#dhcpcd wlp2s2
 
-if [[ $1 != "--now" ]];
-then
-	wait_online
-fi
+wlan_int:
+	sudo /usr/bin/wifi-menu wlp2s2
 
-if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
-then
-	echo 'Add the following lines to /etc/pacman.conf in section [options]'
-	echo -e "\tILoveCandy"
-fi
+wlan_ext:
+	sudo /usr/bin/wifi-menu wlp0s29f7u1
 
-#sudo pacman -Suy
-sudo pacman -Suy --ignore dhcpcd
+lan:
+	sudo /usr/bin/dhcpcd enp2s0
+
+resolv:
+	sudo /usr/bin/vim /etc/resolv.conf
+
+# all services
+sshd:
+	sudo /usr/bin/systemctl start sshd.service
+
+sshd_stop:
+	sudo /usr/bin/systemctl stop sshd.service
+
+httpd:
+	sudo systemctl start httpd
+
+httpd_stop:
+	sudo systemctl stop httpd
+
+serial_getty:
+	sudo systemctl start getty@ttyS0
+
+serial_getty_stop:
+	sudo systemctl stop getty@ttyS0
+
+# useful things
+update:
+	~/bin/update
+
+off:
+	sudo shutdown
 
 # syntax
-# vim: ts=8 sts=8 sw=8 noet si syntax=bash
+# vim: ts=8 sts=8 sw=8 noet si syntax=make
