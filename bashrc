@@ -115,7 +115,7 @@ alias minicom="sudo minicom"
 alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
 alias L8="echo 'LAYER 8 PROBLEM'"
 
-bin/screenfetch
+[[ "$(tty | head -c8)" == "/dev/tty" ]] && bin/screenfetch
 
 #sudo loadkeys de-latin1
 #setterm -foreground green -store -clear
