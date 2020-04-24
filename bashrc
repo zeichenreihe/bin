@@ -15,6 +15,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# for root
+#	#!/bin/bash
+#
+#	#loadkeys de
+#
+#	alias ls="ls --color"
+#	alias ll="ls -la"
+
+
 export PATH="/home/johannes/bin:$PATH"
 export EDITOR="/usr/bin/vim"
 export GIT_EDITOR="/usr/bin/vim"
