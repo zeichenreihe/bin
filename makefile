@@ -30,6 +30,9 @@ wlan_ext:
 lan:
 	sudo /usr/bin/dhcpcd enp2s0
 
+#lan_pixy:
+#	sudo /usr/bin/dhcpcd enp0s25
+
 resolv:
 	sudo /usr/bin/vim /etc/resolv.conf
 
@@ -58,6 +61,12 @@ update:
 
 off:
 	sudo shutdown
+
+hib:
+	sudo systemctl hibernate
+
+poweroff:
+	sudo systemctl poweroff
 
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=make
