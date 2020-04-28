@@ -23,6 +23,12 @@
 #	alias ls="ls --color"
 #	alias ll="ls -la"
 
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && exit 0
 
 export PATH="/home/johannes/bin:$PATH"
 export EDITOR="/usr/bin/vim"
@@ -116,7 +122,8 @@ alias o="less -r"
 alias libreoffice="libreoffice --nologo"
 alias startx="startx 2>/dev/null >/dev/null"
 alias moon='weather "moon?lang=de"'
-alias music_dir_queen="cd ~/$MUSIC_DIR/queen/"
+#alias music_dir_queen="cd ~/$MUSIC_DIR/queen/"
+alias music_dir_queen="ls $MUSIC_DIR/queen ; echo -n 'Enter ALBUM: ' ; read ALBUM; export ALBUM ; cd $MUSIC_DIR/queen/*\$ALBUM*/"
 alias sudo_edit="sudo EDITOR=vim visudo"
 alias wlan='ip a sh wlp2s2 | grep inet | grep -v inet6 | awk "{print \$2}"'
 alias minicom="sudo minicom"

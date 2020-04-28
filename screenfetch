@@ -241,6 +241,9 @@ customlines () {
 
 	# Display public IP:
 	custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
+
+	# Display internal IP:
+	custom4=$(echo -e "$labelcolor Internal IP:$textcolor $(ip a | grep inet | grep -v inet6 | grep -v 127.0.0.1 | sed -e 's/\// /g' | awk '{print $2}')") ; out_array=( "${out_array[@]}" "$custom4" ); ((display_index++));
 }
 
 
