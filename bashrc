@@ -23,12 +23,17 @@
 #	alias ls="ls --color"
 #	alias ll="ls -la"
 
+## original .bashrc
 #
 # ~/.bashrc
 #
 
 # If not running interactively, don't do anything
-[[ $- != *i* ]] && exit 0
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+PS1='[\u@\h \W]\$ '
+
 
 export PATH="/home/johannes/bin:$PATH"
 export EDITOR="/usr/bin/vim"
