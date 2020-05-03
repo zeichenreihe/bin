@@ -42,9 +42,11 @@ export MUSIC_DIR="music"
 export ONLINE="no"
 export ONLINE_SAVE="no"
 export ONLINE_IP=" 0.0.0.0"
-[[ "$(wget http://42.org -O - -o /dev/null|head -1)" == "<HTML><HEAD>" ]]&&export ONLINE="yes"
+export ONLINE="yes" #[[ "$(wget http://42.org -O - -o /dev/null|head -1)" == "<HTML><HEAD>" ]]&&export ONLINE="yes"
 [[ "$(systemctl status sshd.service | grep running | wc -l)" == "0" ]]&&export ONLINE_SAVE="yes"
 [[ "$ONLINE" == "yes" ]]&&export ONLINE_IP="$(wget http://checkip.dyndns.org/ -O - -o /dev/null | cut -d: -f 2 | cut -d '<' -f1)"
+[[ "$ONLINE" == "yes" ]]&&export ONLINE_HOSTNAME="$(dig -x $ONLINE_IP +noall +answer | awk '{print $5}')"
+[[ "$(cat bin/ip_addr)" != "$ONLINE_HOSTNAME" ]]&&echo Online Hostname has changed from $(cat bin/ip_addr) to $ONLINE_HOSTNAME
 
 function dns(){
 	local a b
@@ -127,11 +129,17 @@ alias music_dir_queen="ls $MUSIC_DIR/queen ; echo -n 'Enter ALBUM: ' ; read ALBU
 alias sudo_edit="sudo EDITOR=vim visudo"
 alias wlan='ip a sh wlp2s2 | grep inet | grep -v inet6 | awk "{print \$2}"'
 alias minicom="sudo minicom"
+alias bashrc=". ~/.bashrc"
 
 alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
 alias L8="echo 'LAYER 8 PROBLEM'"
 
-[[ "$(tty | head -c8)" == "/dev/tty" ]] && bin/screenfetch
+if [[ ! -s ~/bin/screenfetch_tmp ]]; then
+	touch ~/bin/screenfetch_tmp
+	~/bin/screenfetch > ~/bin/screenfetch_tmp
+fi
+[[ "$(tty | head -c8)" == "/dev/tty" || "$(tty | head -c8)" == "/dev/pts" ]] && cat ~/bin/screenfetch_tmp
+
 
 #sudo loadkeys de-latin1
 #setterm -foreground green -store -clear

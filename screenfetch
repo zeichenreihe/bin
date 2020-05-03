@@ -224,23 +224,24 @@ customlines () {
 	###########################################
 	##	MY CUSTOM LINES
 	###########################################
-
-	if [ "$(upower -d | grep time)" ]; then
-		battery=$(
-			echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"\
-				"\t$(upower -d | grep time | head -n1 | cut -d ' ' -f 14-)"\
-				"$(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"
-		)
-	else
-		battery=$(
-			echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"\
-				"\tpower supply plugged in"
-		)
+	if [ "$HOSTNAME" == "kirsche" ]; then
+		if [ "$(upower -d | grep time)" ]; then
+			battery=$(
+				echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"\
+					"\t$(upower -d | grep time | head -n1 | cut -d ' ' -f 14-)"\
+					"$(upower -d | grep time | head -n1 | cut -d ' ' -f 6-7 | cut -d ':' -f1)"
+			)
+		else
+			battery=$(
+				echo -e "$labelcolor Battery:$textcolor $(upower -d | grep percentage | head -n1 | cut -d ' ' -f 15-)"\
+					"\tpower supply plugged in"
+			)
+		fi
+		out_array=( "${out_array[@]}" "$battery" ); ((display_index++));
 	fi
-	out_array=( "${out_array[@]}" "$battery" ); ((display_index++));
 
 	# Display public IP:
-	custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip)"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
+	custom3=$(echo -e "$labelcolor Public IP:$textcolor $(curl -s ipinfo.io/ip) $ONLINE_HOSTNAME"); out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
 
 	# Display internal IP:
 	custom4=$(echo -e "$labelcolor Internal IP:$textcolor $(ip a | grep inet | grep -v inet6 | grep -v 127.0.0.1 | sed -e 's/\// /g' | awk '{print $2}')") ; out_array=( "${out_array[@]}" "$custom4" ); ((display_index++));
