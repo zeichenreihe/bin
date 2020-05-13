@@ -22,24 +22,24 @@ band="queen"
 if [[ ! -s ~/projekts/music/MUSIC_INFO ]]
 then
 	echo -n if you want to get the music \(in ~/projekts/music/\)enter uppercase yes:
-	read val
+	read -r val
 	if [[ "$val" == "YES" ]];
 	then
-		cd ~/projekts
+		cd ~/projekts || verbose "could not cd in ~/projekts"
 		git clone johannes@pixy:/home/johannes/projekts/music.git
-		cd -
+		cd - || verbose "clould not go back"
 	fi
 fi
 
 function verbose(){
-	[[ $verbose == 1 ]]&&echo "verbose: "$@
+        [[ $verbose == 1 ]]&&echo "verbose: $*"
 }
 
 function info(){
-	[[ $info == 1 ]]&&echo $@
+        [[ $info == 1 ]]&&echo "$@"
 }
 
-num_args="$@"
+num_args="$*"
 
 play_all=0
 random_play=0
@@ -61,36 +61,36 @@ do
 done
 
 verbose "verbose mode active"
-verbose "band is" $band
-verbose "all arguments:" $num_args
-verbose "song contains:" $song
+verbose "band is $band"
+verbose "all arguments: $num_args"
+verbose "song contains: $song"
 [[ $play_loop == 1 ]] && verbose "playing in loop"
 
 function play(){
-	num_args="$@"
+	num_args="$*"
 	for i in $num_args
 	do
 		clear
-		verbose "playing" $i
-		info $i
-		info $band
-		$MUSIC_PLAYER ~/projekts/music/$band/*/$i 2>/dev/null >/dev/null
+		verbose "playing $i"
+		info "$i"
+		info "$band"
+		$MUSIC_PLAYER ~/projekts/music/"$band"/*/"$i" 2>/dev/null >/dev/null
 	done
 }
 
 function rand_play(){
-	verbose "playing all titles form" $band "randomly in loop"
+	verbose "playing all titles form $band randomly in loop"
 	info "loop"
 	while true;
 	do
-		$MUSIC_PLAYER ~/projekts/music/$band/*/*  -shuffle 2>/dev/null >/dev/null
+		$MUSIC_PLAYER ~/projekts/music/"$band"/*/*  -shuffle 2>/dev/null >/dev/null
 	done
 }
 
 function play_all(){
-	verbose "play all titles from" $band
-	info $band
-	$MUSIC_PLAYER ~/$MUSIC_DIR/$band/*/* 2>/dev/null >/dev/null
+	verbose "play all titles from $band"
+	info "$band"
+	$MUSIC_PLAYER ~/"$MUSIC_DIR"/"$band"/*/* 2>/dev/null >/dev/null
 }
 
 function detect(){
@@ -109,5 +109,6 @@ fi
 detect
 
 exit 0
+
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
