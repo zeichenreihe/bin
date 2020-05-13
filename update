@@ -48,7 +48,8 @@ then
 fi
 
 #sudo pacman -Suy
-sudo pacman -Suy --ignore dhcpcd
+#sudo pacman -Suy --ignore dhcpcd
+sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa --ignore linux
 
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
