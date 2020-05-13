@@ -17,6 +17,9 @@ au BufReadPost *
 	\	exe "normal! g`\"" |
 	\ endif
 
+" allow only 72 character for email
+au BufRead /tmp/mutt-* set tw=72
+
 " enable mouse mode
 set mouse=a
 
