@@ -129,9 +129,10 @@ alias libreoffice="libreoffice --nologo"
 alias startx="startx 2>/dev/null >/dev/null"
 alias moon='weather "moon?lang=de"'
 #alias music_dir_queen="cd ~/$MUSIC_DIR/queen/"
-alias music_dir_queen="ls $MUSIC_DIR/queen ; echo -n 'Enter ALBUM: ' ; read ALBUM; export ALBUM ; cd $MUSIC_DIR/queen/*\$ALBUM*/"
+alias music_dir_queen="ls ~/$MUSIC_DIR/queen ; echo -n 'Enter ALBUM: ' ; read ALBUM; export ALBUM ; cd ~/$MUSIC_DIR/queen/*\$ALBUM*/"
 alias sudo_edit="sudo EDITOR=vim visudo"
 alias wlan='ip a sh wlp2s2 | grep inet | grep -v inet6 | awk "{print \$2}"'
+alias online_ip='online_status | grep ip | awk "{print \$3}"'
 alias minicom="sudo minicom"
 alias bashrc=". ~/.bashrc"
 
@@ -139,8 +140,8 @@ alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
 alias L8="echo 'LAYER 8 PROBLEM'"
 
 export ONLINE_HOSTNAME=$(tr '[:upper:]' '[:lower:]' <<< "$ONLINE_HOSTNAME")
-export HOSTNAME_OLD=$(cat bin/ip_addr)
-if [[ "$(cat bin/ip_addr)" != "$ONLINE_HOSTNAME" ]]; then
+export HOSTNAME_OLD=$(cat ~/bin/ip_addr)
+if [[ "$HOSTNAME_OLD" != "$ONLINE_HOSTNAME" ]]; then
 	echo "Online Hostname has changed from $HOSTNAME_OLD to $ONLINE_HOSTNAME, use certificate_update to update"
 	alias certificate_update="sudo /home/$USER/bin/cert.sh $HOSTNAME_OLD $ONLINE_HOSTNAME"
 fi
