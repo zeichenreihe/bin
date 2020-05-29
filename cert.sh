@@ -21,6 +21,7 @@
 email="johannes_schmatz@gmx.de"
 webroot="/srv/http"
 file_on_server="cert_test.txt"
+linkfile="link.html"
 webroot_cert="/var/lib/letsencrypt/"
 
 ssl_config_dir="/etc/httpd/conf/ssl"
@@ -32,8 +33,8 @@ verbose_var=1
 ## SET VERBOSE FUNCTION
 
 ## SET VARIABLES
-oldhostname="$(head -c-2 <<< "$1")"
-newhostname="$(head -c-2 <<< "$2")"
+oldhostname="$1"
+newhostname="$2"
 
 ## CODE
 echo "=== CERTIFICATE IP CHANGE ==="
@@ -49,6 +50,11 @@ echo "ServerName ${newhostname}:80" > $ssl_config_dir/$name_config
 
 echo "SSLCertificateFile /etc/letsencrypt/live/${newhostname}/fullchain.pem" > $ssl_config_dir/$ssl_config
 echo "SSLCertificateKeyFile /etc/letsencrypt/live/${newhostname}/privkey.pem" >> $ssl_config_dir/$ssl_config
+
+## CREATE HTML LINK
+echo
+echo "== CREATE HTML LINK =="
+echo "<a href=\"https://${newhostname}/\">https</a>" > $webroot/$linkfile
 
 ## RESTART HTTPD
 echo
