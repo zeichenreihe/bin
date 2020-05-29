@@ -1,6 +1,6 @@
 #!/bin/bash
 #    .bashrc - bashrc file
-#    Copyright (C) 2020  Johannes Schmatz
+#    Copyright (C) 2020  Johannes Schmatz <johannes_schmatz@gmx.de>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
