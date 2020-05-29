@@ -53,7 +53,11 @@ HOSTNAME_OTHER_SUB="hostname"
 HOSTNAME_OTHER_EMAIL="dennis.emanuel.hentschel@gmail.com"
 
 # the default network adapter
-export ONLINE_DEFAULT_DEV="enp0s25"
+if [[ $HOSTNAME == "pixy" ]]; then
+	export ONLINE_DEFAULT_DEV="enp0s25"
+else
+	export ONLINE_DEFAULT_DEV="eth0"
+fi
 
 function online_update(){ # get the HOSTNAME etc.
 	#if [[ "$(wget http://42.org -O - -o /dev/null|head -1)" == "<HTML><HEAD>" ]];
