@@ -1,0 +1,64 @@
+## USER SETTINGS
+source ~/.mutt/sec.rc
+
+## COLOR SETTINGS
+color normal green black
+color indicator white blue
+color status black cyan
+color message white blue
+color hdrdefault magenta black
+color attachment cyan black
+color quoted blue black
+color markers white magenta
+
+#color body brightblue black "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
+#color body brightblue black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+#color body brightblue black "news:[^ \">\t\r\n]*"
+
+## HEADER SETTINGS
+set edit_headers=yes
+unset user_agent
+my_hdr X-Info: Keep It Simple, Stupid.
+my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
+my_hdr X-Message-Flag: WARNING!! Outlook sucks
+my_hdr User-Agent: Every email client sucks, this one just sucks less.
+my_hdr X-PGP-Key: https://`echo $ONLINE_HOSTNAME | sed 's/ect.de./ect.de/'`/home/key.gpg
+
+unset imap_passive
+set editor         = `echo \$EDITOR`
+set imap_user      = $my_email
+set imap_pass      = $my_passwd
+set folder         = imaps://$my_imap/
+set spoolfile      = +INBOX
+mailboxes          = +INBOX
+set mail_check 	   = 120
+set imap_keepalive = 5
+set realname       = $my_name
+set from           = $my_email
+set use_from       = yes
+set smtp_url       = smtps://$my_email@$my_smtp
+set smtp_pass      = $my_passwd
+set ssl_starttls   = yes
+set ssl_force_tls  = yes
+set send_charset   = $my_charset
+set mailcap_path   = ~/.mutt/mailcap
+auto_view text/html
+alternative_order text/plain text/html
+
+set sort = "threads"
+set strict_threads = no
+
+#bind index,pager 
+
+bind index,pager k previous-entry
+bind index,pager j next-entry
+bind index,pager g noop
+bind index,pager \Cu half-up
+bind index,pager \Cd half-down
+bind pager gg top
+bind index gg first-entry
+bind pager G bottom
+bind index G last-entry
+
+## GPG
+source ~/.mutt/gpg.rc
