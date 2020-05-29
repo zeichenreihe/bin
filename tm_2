@@ -1,0 +1,40 @@
+## WINDOW LOGS
+splitw -vd 'htop'
+select-pane -t 1
+splitw -hd 'sudo journalctl -f'
+select-pane -t 2
+splitw -vd 'sudo tail -f /var/log/httpd/*'
+select-pane -t 0
+splitw -hp33 -d 'dmesg -w | grep res=failed'
+select-pane -t 0
+send-keys "nload ; exit\n"
+
+## WINDOW EMAILS
+new-window -d 'mutt'
+
+## WINDOW MUSIC
+new-window -d 'mocp'
+
+## WINDOW MIXERS
+new-window -d 'alsamixer -c 0'
+select-window -t 3
+split-window -hd 'pulsemixer'
+
+## WINDOW SCHULE
+new-window
+
+## NAME THE WINDOWS
+rename-window -t 0 "Log"
+rename-window -t 1 "E-Mail"
+rename-window -t 2 "Music"
+rename-window -t 3 "Mixer"
+rename-window -t 4 "Schule"
+
+## SEND COMMANDS ##
+send-keys "clear;cat ~/bin/screenfetch_tmp\n"
+send-keys "cd projekts/schule\n"
+send-keys "ls\n"
+
+## COLORS OF STATE BAR
+set status-fg white
+set status-bg blue
