@@ -41,6 +41,10 @@ then
 	wait_online
 fi
 
+if [[ ! -s /etc/pacman.conf ]];
+then
+sudo apt update && sudo apt upgrade
+else
 if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
 then
 	echo 'Add the following lines to /etc/pacman.conf in section [options]'
@@ -51,5 +55,6 @@ fi
 sudo pacman -Suy --ignore dhcpcd
 #sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa
 
+fi
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
