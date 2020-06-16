@@ -36,24 +36,47 @@ function wait_online(){
 	fi
 }
 
+function verb(){
+	echo -e "\e[34;42m$@\e[0m"
+}
+
 if [[ $1 != "--now" ]];
 then
+	verb "Waiting for Internet..."
 	wait_online
+	verb "Done."
 fi
 
 if [[ ! -s /etc/pacman.conf ]];
 then
-sudo apt update && sudo apt upgrade
+	sudo apt update && sudo apt upgrade
 else
-if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
-then
-	echo 'Add the following lines to /etc/pacman.conf in section [options]'
-	echo -e "\tILoveCandy"
-fi
+	if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
+	then
+		echo 'Add the following lines to /etc/pacman.conf in section [options]'
+		echo -e "\tILoveCandy"
+	fi
 
-#sudo pacman -Suy
-sudo pacman -Suy --ignore dhcpcd
-#sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa
+	verb "Updating Package Database..."
+	sudo pacman -Sy
+	verb "Done."
+	mkinitcpio_yes=no
+	[[ "$(pacman -Qu | grep linux | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
+	[[ "$(pacman -Qu | grep systemd | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
+	[[ "$(pacman -Qu | grep firmware | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
+
+	verb "Updating..."
+	#sudo pacman -Suy
+	sudo pacman -Suy --ignore dhcpcd
+	#sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa
+	verb "Done."
+
+	if [[ "$mkinitcpio_yes" == "yes" ]]; then
+		verb "Updating initramfs..."
+		sudo mkinitcpio -p linux
+		sudo mkinitcpio -p linux-lts
+		verb "Done."
+	fi
 
 fi
 # syntax
