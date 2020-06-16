@@ -264,6 +264,10 @@ customlines () {
 	# Display internal IP:
 	custom4=$(echo -e "$labelcolor Internal IP:$textcolor $ONLINE_INT_IP $HOSTNAME")
 		out_array=( "${out_array[@]}" "$custom4" ); ((display_index++));
+
+	# Display EMAIL:
+	custom5=$(echo -e "$labelcolor EMAIL:$textcolor $EMAIL")
+		out_array=( "${out_array[@]}" "$custom5"); ((display_index++));
 }
 
 
@@ -6359,6 +6363,9 @@ infoDisplay () {
 			((display_index++))
 		fi
 		if [[ "${display[@]}" =~ "gpu" ]] && [[ "$gpu" != "Not Found" ]]; then
+			# own
+			gpu="$(sed 's/Corporation //g; s/Integrated //g' <<< "$gpu")"
+			# endown
 			mygpu=$(echo -e "$labelcolor GPU:$textcolor $gpu")
 			out_array=( "${out_array[@]}" "$mygpu" )
 			((display_index++))
