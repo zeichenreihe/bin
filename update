@@ -74,7 +74,7 @@ else
 	if [[ "$mkinitcpio_yes" == "yes" ]]; then
 		verb "Updating initramfs..."
 		sudo mkinitcpio -p linux
-		sudo mkinitcpio -p linux-lts
+		#sudo mkinitcpio -p linux-lts
 		verb "Done."
 	fi
 
