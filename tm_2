@@ -17,7 +17,7 @@ new-window -n 'E-Mail' -d 'mutt'
 new-window -n 'Music' -d 'mocp -R alsa'
 
 ## WINDOW MIXERS
-new-window -n 'Mixer' -d 'alsamixer -c 0'
+new-window -n 'Mixer' -d 'alsamixer -D hw:Intel'
 select-window -t 3
 split-window -hd 'pulsemixer'
 
