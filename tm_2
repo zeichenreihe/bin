@@ -8,32 +8,25 @@ select-pane -t 0
 splitw -hp33 -d 'dmesg -w | grep res=failed'
 select-pane -t 0
 send-keys "nload ; exit\n"
+rename-window -t 0 "Log"
 
 ## WINDOW EMAILS
-new-window -d 'mutt'
+new-window -n 'E-Mail' -d 'mutt'
 
 ## WINDOW MUSIC
-new-window -d 'mocp'
+new-window -n 'Music' -d 'mocp -R alsa'
 
 ## WINDOW MIXERS
-new-window -d 'alsamixer -c 0'
+new-window -n 'Mixer' -d 'alsamixer -c 0'
 select-window -t 3
 split-window -hd 'pulsemixer'
 
+## WINDOW SEC
+new-windows -n 'Sec' -d 'sudo /root/mal_ips_sh'
+
 ## WINDOW SCHULE
 new-window
-
-## NAME THE WINDOWS
-rename-window -t 0 "Log"
-rename-window -t 1 "E-Mail"
-rename-window -t 2 "Music"
-rename-window -t 3 "Mixer"
-rename-window -t 4 "Schule"
-
-## SEND COMMANDS ##
-send-keys "clear;cat ~/bin/screenfetch_tmp\n"
-send-keys "cd projekts/schule\n"
-send-keys "ls\n"
+send-keys "clear;cat ~/bin/screenfetch_tmp;cd projekts/schule;ls\n"
 
 ## COLORS OF STATE BAR
 set status-fg white
