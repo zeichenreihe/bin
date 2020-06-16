@@ -23,6 +23,18 @@ au BufRead /tmp/mutt-* set tw=72
 " enable mouse mode
 set mouse=a
 
+" enable dark mode if in TMUX
+if $TMUX != ""
+	set background=dark
+else
+	set background=light
+endif
+if $DISPLAY != ""
+	set background=dark
+else
+	set background=light
+endif
+
 " latex
 set grepprg=grep\ -nH\ $*
 let g:tex_flavor = "latex"
