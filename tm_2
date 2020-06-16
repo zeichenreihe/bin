@@ -22,7 +22,7 @@ select-window -t 3
 split-window -hd 'pulsemixer'
 
 ## WINDOW SEC
-new-windows -n 'Sec' -d 'sudo /root/mal_ips_sh'
+new-window -n 'Sec' -d 'sudo /root/mal_ips_sh'
 
 ## WINDOW SCHULE
 new-window
