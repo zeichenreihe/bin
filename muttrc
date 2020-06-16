@@ -22,7 +22,7 @@ my_hdr X-Info: Keep It Simple, Stupid.
 my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
 my_hdr X-Message-Flag: WARNING!! Outlook sucks
 my_hdr User-Agent: Every email client sucks, this one just sucks less.
-my_hdr X-PGP-Key: https://`echo $ONLINE_HOSTNAME | sed 's/ect.de./ect.de/'`/home/key.gpg
+my_hdr X-PGP-Key: https://`echo $ONLINE_HOSTNAME`/home/key/johannes.gpg
 
 unset imap_passive
 set editor         = `echo \$EDITOR`
