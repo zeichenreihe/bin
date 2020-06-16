@@ -254,7 +254,6 @@ alias moon='weather "moon?lang=de"'
 alias grep="grep --color=auto"
 alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
 alias motd="~/hacks/motd/new.sh"
-alias news="newsboat"
 function hist(){ # print the $1 most often used commands, 0=10 most used
 	eval history | \
 	sed 's/[^ \t]\+//; s/#/# /g; s/=.*/= /; s/;/ /g' | \
