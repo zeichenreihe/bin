@@ -39,9 +39,23 @@ alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
 #-- END ORGINAL ---
 
+function SET_PS1(){
+	PS1='[\u@\h \W]\$ '
+	### EMOJI ###
+	. ~/bin/emoji.rc.sh
+	[[ "$DISPLAY" != "" ]]&&PS1='[\u@\h \W]$(RANDOM_EMOJI $?)\$ '
+	#-- END EMOJI ---
+}
+
+
 ### DEFAULT CONFIGURATION ###
 export PATH="/home/$USER/bin:$PATH"
 export GIT_EDITOR="$EDITOR"
+export HISTFILESIZE="10000"
+
+### OWNER INFORMATION ###
+export EMAIL="johannes_schmatz@gmx.de"
+export NAME="Johannes Schmatz"
 
 ### ONLINE SECTION ###
 # the script needs to know what is the end of your hostname
@@ -107,8 +121,13 @@ function online_update(){ # get the HOSTNAME etc.
 			echo "INFO: Online Hostname has changed from $HOSTNAME_OLD to $ONLINE_HOSTNAME," 1>&2
 			echo "INFO: use 'certificate_update' to update" 1>&2
 			echo "INFO: to send the new hostname and IP to $HOSTNAME_OTHER_NAME use 'hostname_update'" 1>&2
+			echo "INFO: to create a new page /tmp/schul-cloud/* for schul-cloud.org use 'schul-cloud_update'" 1>&2
 			alias certificate_update="sudo /home/$USER/bin/cert.sh $ONLINE_HOSTNAME_OLD $ONLINE_HOSTNAME"
 			alias hostname_update="mutt -s \"$HOSTNAME_OTHER_SUB\" $HOSTNAME_OTHER_EMAIL <<< \"\$(echo -e \"$ONLINE_IP\n$ONLINE_HOSTNAME\")\""
+			function schul-cloud_update(){
+				[[ -d /tmp/schul-cloud/ ]]||mkdir /tmp/schul-cloud
+				sed "s/127.0.0.1/$ONLINE_HOSTNAME/g" < ~/http/schul-cloud.html > /tmp/schul-cloud/Lustiges_YT_Video.html
+			}
 		fi
 
 		if [[ "$(systemctl status sshd.service | grep running | wc -l)" == "0" ]];
@@ -116,6 +135,9 @@ function online_update(){ # get the HOSTNAME etc.
 			export ONLINE_SAVE="yes"
 		else
 			echo "INFO: sshd is running, use 'make sshd_stop' to stop it" 1>&2
+			echo "INFO: FIREWALL: use 'mal_ips_add <ip>' to add ip" 1>&2
+			echo "INFO: FIREWALL: use 'mal_ips_del <ip>' to delete ip" 1>&2
+			echo "INFO: FIREWALL: use 'mal_ips_list' to list the entry" 1>&2
 		fi
 
 		# that function returns the weather of $1, $2 ... in short, if there is only one in long
@@ -174,36 +196,108 @@ function dns(){
 		done
 	done
 }
+
+# get the dns records of x.x.x.x x=0..255
+function dns_xxxx(){
+	for i in {1..255}
+	do
+		dns $i.$i.$i.$i.ip
+	done
+}
+
+## IPSET SECTION ##
+# function to add specific ips to mal-ips
+function mal_ips_add(){
+	sudo ipset add mal-ips $1
+	sudo bash -c 'ipset save > /etc/ipset.conf'
+	sudo iptables -I INPUT -m set --match-set mal-ips src -j DROP
+}
+# function to delete specific ips to mal-ips
+function mal_ips_del(){
+	sudo ipset del mal-ips $1
+	sudo bash -c 'ipset save > /etc/ipset.conf'
+	sudo iptables -I INPUT -m set --match-set mal-ips src -j DROP
+}
+# function to list all ips in mal-ips
+function mal_ips_list(){
+	grep -E "^add mal-ips [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" /etc/ipset.conf | \
+		awk '{print $3}' | \
+		sed 's/\./ /g' | \
+		sort -n | \
+		sed 's/ /./g'
+}
+# completion function for mal_ips_del
+function _mal_ips_del(){
+	COMPREPLY=($(compgen -W "`mal_ips_list`" "${COMP_WORDS[1]}"))
+}
+complete -F _mal_ips_del mal_ips_del
+#- END IPSET SECTION --
 #-- END ONLINE SECTION ---
 
-### OTHER USEFUL FUNCTIONS ###
-# print the $1 most often used commands, if $1 == "" prints the 10 most used commands
-function hist(){
+### ALIAS + FUNCTION SECTION ###
+# 1 char
+alias o="less -r"
+alias q="exit"
+
+# 2 char
+alias ls="ls --color"
+alias ll="ls -la"
+alias tm="tmux"
+alias am="alsamixer"
+alias L8="echo 'LAYER 8 PROBLEM'"
+
+# 3 char
+alias cls=clear
+
+# 4 char
+alias moon='weather "moon?lang=de"'
+alias grep="grep --color=auto"
+alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
+alias motd="~/hacks/motd/new.sh"
+alias news="newsboat"
+function hist(){ # print the $1 most often used commands, 0=10 most used
 	eval history | \
-	awk '{print $2}' | \
-	awk 'BEGIN {FS="|"}{print $1}' | \
+	sed 's/[^ \t]\+//; s/#/# /g; s/=.*/= /; s/;/ /g' | \
+	awk '{print $1}' | \
 	sort | \
 	uniq -c | \
 	sort -rn | \
 	head -$1 | \
 	nl | \
 	less
+#	eval history | \
+#	awk '{print $2}' | \
+#	awk 'BEGIN {FS="|"}{print $1}' | \
+#	sort | \
+#	uniq -c | \
+#	sort -rn | \
+#	head -$1 | \
+#	nl | \
+#	less
 }
 
-# generate a random number
-function random_number(){
-	head -c1 /dev/urandom | \
-	od -An -vtu1 | \
-	tr -d ' '
+# 5 char
+alias image="fbi"
+
+# 6 char
+alias bashrc=". ~/.bashrc"
+alias brexit="cd; sudo clear ; screenfetch ; make update poweroff && exit"
+alias startx="startx 2>/dev/null >/dev/null"
+
+# 7 char
+alias vimbash="vim ~/.bashrc && . ~/.bashrc"
+alias minicom="sudo minicom -D /dev/ttyS0"
+function rainbow(){
+	for i in {21..51..6} {50..46} {82..226..36} {220..196..6} {197..201} {165..21..36}
+	do
+		echo -en "\e[48;5;${i}m\e[38;5;${i}m#\e[0m"
+	done
+	echo
 }
 
-# check if a number is prime
-function prime_check(){
-	openssl prime $@ | sed -e "s/[()isrmeot]//g"  | awk '{print $3 " " $2}'
-}
-
-# read code
-function read_code(){
+# 9 char
+alias sudo_edit="sudo EDITOR=vim visudo"
+function read_code(){ # read code $1=to line, 0=all; $2-number of lines, 0=all;$@ - files to cat
 	if [[ "$1" == "0" && "$2" == "0" ]];
 	then
 		shift 2
@@ -217,48 +311,36 @@ function read_code(){
 			"$(cat $@ | head -$a | tail -$b)" 2>/dev/null
 	fi
 }
-#-- END OTHER USEFUL FUNCTIONS ---
 
-### ALIAS SECTION ###
-# 1 char aliases
-alias o="less -r"
-alias q="exit"
-
-# 2 char aliases
-alias ls="ls --color"
-alias ll="ls -la"
-alias tm="tmux"
-alias am="alsamixer"
-alias L8="echo 'LAYER 8 PROBLEM'"
-
-# 3 char aliases
-alias cls=clear
-
-# 4 char aliases
-alias moon='weather "moon?lang=de"'
-alias grep="grep --color=auto"
-alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
-
-# 6 char aliases
-alias bashrc=". ~/.bashrc"
-alias brexit="sudo clear ; screenfetch ; make update poweroff && exit"
-alias startx="startx 2>/dev/null >/dev/null"
-
-# 7 char aliases
-alias vimbash="vim ~/.bashrc && . ~/.bashrc"
-alias minicom="sudo minicom -D /dev/ttyS0"
-
-# 9 char aliases
-alias sudo_edit="sudo EDITOR=vim visudo"
-#-- END ALIAS SECTION ---
+# 10+ char
+function prime_check(){ # check if a number is prime
+	openssl prime $@ | sed -e "s/[()isrmeot]//g"  | awk '{print $3 " " $2}'
+}
+function random_number(){ # generate a random number
+	head -c1 /dev/urandom | \
+	od -An -vtu1 | \
+	tr -d ' '
+}
+function arduino-cli_move_int_main_to_sketch(){ ## two functions to move int main to some places
+	~/.arduino15/own_modified_version/move.sh
+}
+function arduino-cli_move_int_main_to_arduino_folder(){
+	~/.arduino15/own_modified_version/undo_move.sh
+}
+#-- END ALIAS + FUNCTION SECTION ---
 
 ### SCREENFETCH ###
 if [[ ! -s ~/bin/screenfetch_tmp ]]; then
 	touch ~/bin/screenfetch_tmp
 	~/bin/screenfetch > ~/bin/screenfetch_tmp
 fi
-[[ "$(tty | head -c8)" == "/dev/tty" || "$(tty | head -c8)" == "/dev/pts" ]] && cat ~/bin/screenfetch_tmp && date
+[[ "$(tty | head -c8)" == "/dev/tty" || "$(tty | head -c8)" == "/dev/pts" ]] && cat \
+	~/bin/screenfetch_tmp 
 #-- END SECRRENFECHT ---
+
+### SET PS1 ###
+SET_PS1
+#-- END SET PS1 ---
 
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
