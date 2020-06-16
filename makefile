@@ -68,5 +68,14 @@ hib:
 poweroff:
 	sudo systemctl poweroff
 
+# https://xkcd.com/149/
+me:
+	@echo xkcd 149 > /dev/null
+a:
+	@echo xkcd 149 > /dev/null
+sandwich:
+	@if [ "$(USER)" != "root" ]; then echo What? make it yourself.; else echo okay.; fi
+# https://xkcd.com/838/
+
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=make
