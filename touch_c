@@ -17,7 +17,7 @@
 
 
 YEAR="$(date +%Y)"
-AUTOR="<autor>"
+AUTOR="$NAME <$EMAIL>"
 
 VIM="vim"
 
