@@ -77,5 +77,8 @@ sandwich:
 	@if [ "$(USER)" != "root" ]; then echo What? make it yourself.; else echo okay.; fi
 # https://xkcd.com/838/
 
+dos:
+	@echo "Please run: PS1='C:\$${PWD//\//\\\\\}> '"
+
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=make
