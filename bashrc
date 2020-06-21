@@ -51,21 +51,14 @@ function SET_PS1(){
 ### DEFAULT CONFIGURATION ###
 export PATH="/home/$USER/bin:$PATH"
 export GIT_EDITOR="$EDITOR"
-export HISTFILESIZE="10000"
+export HISTSIZE=10000
+export HISTFILESIZE=10000
 
 ### OWNER INFORMATION ###
 export EMAIL="johannes_schmatz@gmx.de"
 export NAME="Johannes Schmatz"
 
 ### ONLINE SECTION ###
-# the script needs to know what is the end of your hostname
-export HOSTNAME_PROVIDER_END=".t-ipconnect.de"
-
-# the other person to wich will be the email send
-HOSTNAME_OTHER_NAME="DENNIS"
-HOSTNAME_OTHER_SUB="hostname"
-HOSTNAME_OTHER_EMAIL="dennis.emanuel.hentschel@gmail.com"
-
 # the default network adapter
 if [[ $HOSTNAME == "pixy" ]]; then
 	export ONLINE_DEFAULT_DEV="enp0s25"
@@ -97,7 +90,7 @@ function online_update(){ # get the HOSTNAME etc.
 			dig -x $ONLINE_IP +noall +answer | \
 			awk '{print $5}' | \
 			tr '[:upper:]' '[:lower:]' | \
-			sed "s/$HOSTNAME_PROVIDER_END\./$HOSTNAME_PROVIDER_END/"
+			sed 's/\.$//g'
 		)"
 
 		export ONLINE_HOSTNAME_FB="$(
@@ -119,15 +112,7 @@ function online_update(){ # get the HOSTNAME etc.
 
 		if [[ "$ONLINE_HOSTNAME_OLD" != "$ONLINE_HOSTNAME" ]]; then
 			echo "INFO: Online Hostname has changed from $HOSTNAME_OLD to $ONLINE_HOSTNAME," 1>&2
-			echo "INFO: use 'certificate_update' to update" 1>&2
-			echo "INFO: to send the new hostname and IP to $HOSTNAME_OTHER_NAME use 'hostname_update'" 1>&2
-			echo "INFO: to create a new page /tmp/schul-cloud/* for schul-cloud.org use 'schul-cloud_update'" 1>&2
-			alias certificate_update="sudo /home/$USER/bin/cert.sh $ONLINE_HOSTNAME_OLD $ONLINE_HOSTNAME"
-			alias hostname_update="mutt -s \"$HOSTNAME_OTHER_SUB\" $HOSTNAME_OTHER_EMAIL <<< \"\$(echo -e \"$ONLINE_IP\n$ONLINE_HOSTNAME\")\""
-			function schul-cloud_update(){
-				[[ -d /tmp/schul-cloud/ ]]||mkdir /tmp/schul-cloud
-				sed "s/127.0.0.1/$ONLINE_HOSTNAME/g" < ~/http/schul-cloud.html > /tmp/schul-cloud/Lustiges_YT_Video.html
-			}
+			echo "INFO: use 'update_hostname' to update" 1>&2
 		fi
 
 		if [[ "$(systemctl status sshd.service | grep running | wc -l)" == "0" ]];
@@ -242,9 +227,26 @@ alias q="exit"
 # 2 char
 alias ls="ls --color"
 alias ll="ls -la"
-alias tm="tmux"
 alias am="alsamixer"
 alias L8="echo 'LAYER 8 PROBLEM'"
+
+## Autocompletion for tm ##
+# tm<tab> shows tmux and tm
+#alias tm="tmux"
+#function _tm(){
+#	COMPREPLY=($(compgen -W "`mal_ips_list`" "${COMP_WORDS[1]}"))
+#}
+#complete -F _tm tm
+# so this is better:
+# tm<tab> -> 'tmux '
+# tmux <tab> -> list of options
+complete -W "attach \
+	split-window \
+	rename-session \
+	rename-window \
+	new-session \
+	new-window" tmux
+#complete -F _tmux tmux
 
 # 3 char
 alias cls=clear
@@ -277,6 +279,7 @@ function hist(){ # print the $1 most often used commands, 0=10 most used
 
 # 5 char
 alias image="fbi"
+alias lsblk="lsblk -af"
 
 # 6 char
 alias bashrc=". ~/.bashrc"
@@ -292,6 +295,15 @@ function rainbow(){
 		echo -en "\e[48;5;${i}m\e[38;5;${i}m#\e[0m"
 	done
 	echo
+}
+function git_vor(){
+	echo $[
+		$(git shortlog --summary | \
+			awk '{print $1}'
+		) - $(git shortlog --summary origin/master | \
+			awk '{print $1}'
+		)
+	]
 }
 
 # 9 char
