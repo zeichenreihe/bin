@@ -25,7 +25,7 @@ split-window -hd 'pulsemixer'
 new-window -n 'Sec' -d 'sudo /root/mal_ips_sh'
 
 ## WINDOW SCHULE
-new-window
+new-window -n 'Schule'
 send-keys "clear;cat ~/bin/screenfetch_tmp;cd projekts/schule;ls\n"
 
 ## COLORS OF STATE BAR
