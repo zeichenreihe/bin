@@ -1,0 +1,102 @@
+#!/bin/bash
+#    update_hostname - scrip to update the hostname etc.
+#    Copyright (C) 2020  Johannes Schmatz <johannes_schmatz@gmx.de>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# config
+HOSTNAME_OTHER_FILE=~/.mutt/contacts.txt
+# /config
+
+if [[ "$@" =~ "--help" ]]; then
+	echo "use $0 --help to show this text"
+	echo "use $0 -a     to update all (default)"
+	echo "use $0 -c     to update certs"
+	echo "use $0 -s     to update schul-cloud"
+	echo "use $0 -m     to send emails via mutt to the people in $MAIL_FILE_ADDR"
+	exit 1
+fi
+
+export ONLINE_IP="$(
+	wget http://checkip.dyndns.org/ -O - -o /dev/null | \
+	cut -d ':' -f 2 | \
+	cut -d '<' -f 1 | \
+	awk '{print $1}'
+)"
+
+export ONLINE_INT_IP="$(
+	ip a sh $ONLINE_DEFAULT_DEV | \
+	grep "inet" | \
+	grep -v "inet6" | \
+	sed 's/\// /' | \
+	awk '{print $2}'
+)"
+
+export ONLINE_HOSTNAME="$(
+	dig -x $ONLINE_IP +noall +answer | \
+	awk '{print $5}' | \
+	tr '[:upper:]' '[:lower:]' | \
+	sed 's/\.$//g'
+)"
+
+export ONLINE_HOSTNAME_FB="$(
+	curl "https://www.freebasic.net/wiki/wikka.php?wakka=FBWiki" 2>/dev/null | \
+	head -129 | \
+	tail -1 | \
+	cut -b 26- | \
+	cut -b -29 | \
+	tr '[:upper:]' '[:lower:]'
+)"
+
+export ONLINE_HOSTNAME_OLD="$(cat ~/bin/ip_addr)"
+
+if [[ "$ONLINE_HOSTNAME" != $ONLINE_HOSTNAME_FB ]];
+then
+	echo "ALERT: The hostname returned from Freebasic ($ONLINE_HOSTNAME_FB)" 1>&2
+	echo "ALERT: is not the same as from dig ($ONLINE_HOSTNAME)." 1>&2
+fi
+
+function certificate_update(){
+	sudo /home/$USER/bin/cert.sh $ONLINE_HOSTNAME_OLD $ONLINE_HOSTNAME
+}
+function schul-cloud_update(){
+	[[ -d /tmp/schul-cloud/ ]]||mkdir /tmp/schul-cloud
+	sed "s/127.0.0.1/$ONLINE_HOSTNAME/g" < ~/http/schul-cloud.html > /tmp/schul-cloud/Lustiges_YT_Video.html
+	echo "site is in /tmp/schul-cloud/* for schul-cloud.org"
+}
+function send_mail(){
+	for i in $(cat $HOSTNAME_OTHER_FILE); do
+		mutt -s "hostname johannes" $i <<< "$(echo -e "$ONLINE_IP\n$ONLINE_HOSTNAME")"
+	done
+}
+
+for i in $@; do
+	case $i in #((((
+		"-s") schul-cloud_update;;
+		"-m") send_mail;;
+		"-c") certificate_update;;
+		*) certificate_update;
+			send_mail;
+			schul-cloud_update;;
+	esac
+done
+
+#echo "INFO: to send the new hostname and IP to the other people in $_HOSTNAME_OTHER_FILE use 'hostname_update'" 1>&2
+#echo "INFO: to create a new page /tmp/schul-cloud/* for schul-cloud.org use 'schul-cloud_update'" 1>&2
+#function hostname_update(){
+#	mutt -s "$HOSTNAME_OTHER_SUB" $HOSTNAME_OTHER_EMAIL <<< "$(echo -e "$ONLINE_IP\n$ONLINE_HOSTNAME")"
+#}
+
+# syntax
+# vim: ts=8 sts=8 sw=8 noet si syntax=bash
