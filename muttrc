@@ -2,13 +2,13 @@
 source ~/.mutt/sec.rc
 
 ## COLOR SETTINGS
-color normal green black
+color normal green default
 color indicator white blue
 color status black cyan
 color message white blue
-color hdrdefault magenta black
-color attachment cyan black
-color quoted blue black
+color hdrdefault magenta default
+color attachment cyan default
+color quoted blue default
 color markers white magenta
 
 #color body brightblue black "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
