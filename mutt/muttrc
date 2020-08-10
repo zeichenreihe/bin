@@ -1,6 +1,9 @@
 ## USER SETTINGS
 source ~/.mutt/sec.rc
 
+## USER ALIASES
+source ~/.mutt/alias.rc
+
 ## COLOR SETTINGS
 color normal green default
 color indicator white blue
@@ -23,6 +26,8 @@ my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
 my_hdr X-Message-Flag: WARNING!! Outlook sucks
 my_hdr User-Agent: Every email client sucks, this one just sucks less.
 my_hdr X-PGP-Key: https://`echo $ONLINE_HOSTNAME`/home/key/johannes.gpg
+my_hdr X-Arch-Linux: mutt tmux vim linux grub firefox xfce4
+my_hdr X-Mailer: mutt
 
 unset imap_passive
 set editor         = `echo \$EDITOR`
@@ -31,7 +36,7 @@ set imap_pass      = $my_passwd
 set folder         = imaps://$my_imap/
 set spoolfile      = +INBOX
 mailboxes          = +INBOX
-set mail_check 	   = 120
+set mail_check 	   = 20
 set imap_keepalive = 5
 set realname       = $my_name
 set from           = $my_email
@@ -42,11 +47,15 @@ set ssl_starttls   = yes
 set ssl_force_tls  = yes
 set send_charset   = $my_charset
 set mailcap_path   = ~/.mutt/mailcap
-auto_view text/html
+auto_view text/html application/pdf
 alternative_order text/plain text/html
 
 set sort = "threads"
 set strict_threads = no
+
+# show the user tags
+#set index_format="%4C %Z %{%b %d} %-15.15L %-4.4y (%?l?%4l&%4c?) %s"
+set index_format="%4C %Z %{%b %d} %-15.15L %-4.4y (%4c) %s"
 
 #bind index,pager 
 
@@ -62,3 +71,4 @@ bind index G last-entry
 
 ## GPG
 source ~/.mutt/gpg.rc
+set fcc_clear = yes
