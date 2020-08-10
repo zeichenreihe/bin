@@ -258,11 +258,13 @@ customlines () {
 	fi
 
 	# Display public IP:
-	custom3=$(echo -e "$labelcolor Public IP:$textcolor $ONLINE_IP $ONLINE_HOSTNAME")
+	custom3=$(echo -e "$labelcolor Public IPv4:$textcolor $IP_4 $HOSTNAME_4")
+		out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
+	custom3=$(echo -e "$labelcolor Public IPv6:$textcolor $IP_6 $HOSTNAME_6")
 		out_array=( "${out_array[@]}" "$custom3" ); ((display_index++));
 
 	# Display internal IP:
-	custom4=$(echo -e "$labelcolor Internal IP:$textcolor $ONLINE_INT_IP $HOSTNAME")
+	custom4=$(echo -e "$labelcolor Internal IP:$textcolor $IP_4_INT $HOSTNAME")
 		out_array=( "${out_array[@]}" "$custom4" ); ((display_index++));
 
 	# Display EMAIL:
