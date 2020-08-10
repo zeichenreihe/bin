@@ -1,0 +1,8 @@
+Host birne
+	HostName 192.168.2.115
+	User     pi
+
+Host pixy
+	Hostname 127.0.0.1
+	User     johannes
+
