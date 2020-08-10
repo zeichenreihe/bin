@@ -15,69 +15,68 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function online_status(){
-	online="no"
-	[[ "$(wget http://42.org -O - -o /dev/null 2>/dev/null |head -1)" == "<HTML><HEAD>" ]]&&online="yes"
-}
-
-function wait_online(){
-	onepoint="no"
-	online_status
-	while [[ "$online" != "yes" ]];
-	do
-		sleep 1
-		online_status
-		onepoint="yes"
-		echo -n "."
-	done
-	if [[ $onepoint == "yes" ]]
-	then
-		echo
-	fi
-}
+. ~/bin/bash.rc/config.sh
+. ~/bin/bash.rc/alias.sh
 
 function verb(){
-	echo -e "\e[34;42m$@\e[0m"
+	echo -e "$C_BLUE$C_B_GREEN$@$C_NULL"
 }
 
-if [[ $1 != "--now" ]];
-then
-	verb "Waiting for Internet..."
-	wait_online
-	verb "Done."
-fi
-
-if [[ ! -s /etc/pacman.conf ]];
-then
-	sudo apt update && sudo apt upgrade
-else
-	if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
-	then
-		echo 'Add the following lines to /etc/pacman.conf in section [options]'
-		echo -e "\tILoveCandy"
-	fi
-
-	verb "Updating Package Database..."
-	sudo pacman -Sy
-	verb "Done."
-	mkinitcpio_yes=no
-	[[ "$(pacman -Qu | grep linux | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
-	[[ "$(pacman -Qu | grep systemd | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
-	[[ "$(pacman -Qu | grep firmware | wc -l)" != 0 ]]&&mkinitcpio_yes="yes"
-
+function run_update(){
 	verb "Updating..."
-	#sudo pacman -Suy
-	sudo pacman -Suy --ignore dhcpcd
-	#sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa
-	verb "Done."
+	verb "$@"
+	# execute the package manager
+	$@
 
-	if [[ "$mkinitcpio_yes" == "yes" ]]; then
-		verb "Updating initramfs..."
-		sudo mkinitcpio -p linux
-		#sudo mkinitcpio -p linux-lts
+	# grab the exit status
+	exit_status=$?
+
+	if [[ $exit_status != 0 ]]; then
+		echo "ERROR: exit status of '$@' is $exit_status!"
+		echo "please check manually!!!"
+		verb "aborting..."
+		exit 1
+	else
 		verb "Done."
 	fi
+}
 
-fi
+function detect_os(){
+	if [[ ! -s /etc/pacman.conf ]]; then
+		echo "raspbian"
+	else
+		echo "arch"
+	fi
+}
+
+case "$(detect_os)" in #(((
+	"arch")
+		if [[ "$(grep ILoveCandy /etc/pacman.conf)" != "ILoveCandy" ]]
+		then
+			echo 'Add the following lines to /etc/pacman.conf ' \
+				'in section [options]'
+			echo -e "\tILoveCandy"
+		fi
+
+		run_update "sudo pacman -Suy"
+#		run_update "sudo pacman -Suy --ignore dhcpcd"
+#		run_update "sudo pacman -Suy --ignore dhcpcd --ignore xf86-video-vesa"
+	;;
+	"raspbian")
+		run_update "sudo apt update && sudo apt upgrade"
+	;;
+	*)
+		echo "Distro not matched!"
+		echo "detect_os says: $(detect_os)"
+		echo "aborting..."
+	;;
+esac
+
+echo
+verb "== Please restart the following processes =="
+echo -e "$C_RED$C_B_BLUE"
+show_update_proc
+echo -e "$C_NULL"
+
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash

@@ -1,5 +1,5 @@
 #!/bin/bash
-#    update_hostname - scrip to update the hostname etc.
+#    update_hostname - script to update the hostname etc.
 #    Copyright (C) 2020  Johannes Schmatz <johannes_schmatz@gmx.de>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -15,87 +15,94 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# config
-HOSTNAME_OTHER_FILE=~/.mutt/contacts.txt
-# /config
+. ~/bin/bash.rc/ip.sh
+. ~/bin/bash.rc/config.sh
 
-if [[ "$@" =~ "--help" ]]; then
+function this_help(){
 	echo "use $0 --help to show this text"
-	echo "use $0 -a     to update all (default)"
-	echo "use $0 -c     to update certs"
-	echo "use $0 -s     to update schul-cloud"
-	echo "use $0 -m     to send emails via mutt to the people in $MAIL_FILE_ADDR"
-	exit 1
-fi
-
-export ONLINE_IP="$(
-	wget http://checkip.dyndns.org/ -O - -o /dev/null | \
-	cut -d ':' -f 2 | \
-	cut -d '<' -f 1 | \
-	awk '{print $1}'
-)"
-
-export ONLINE_INT_IP="$(
-	ip a sh $ONLINE_DEFAULT_DEV | \
-	grep "inet" | \
-	grep -v "inet6" | \
-	sed 's/\// /' | \
-	awk '{print $2}'
-)"
-
-export ONLINE_HOSTNAME="$(
-	dig -x $ONLINE_IP +noall +answer | \
-	awk '{print $5}' | \
-	tr '[:upper:]' '[:lower:]' | \
-	sed 's/\.$//g'
-)"
-
-export ONLINE_HOSTNAME_FB="$(
-	curl "https://www.freebasic.net/wiki/wikka.php?wakka=FBWiki" 2>/dev/null | \
-	head -129 | \
-	tail -1 | \
-	cut -b 26- | \
-	cut -b -29 | \
-	tr '[:upper:]' '[:lower:]'
-)"
-
-export ONLINE_HOSTNAME_OLD="$(cat ~/bin/ip_addr)"
-
-if [[ "$ONLINE_HOSTNAME" != $ONLINE_HOSTNAME_FB ]];
-then
-	echo "ALERT: The hostname returned from Freebasic ($ONLINE_HOSTNAME_FB)" 1>&2
-	echo "ALERT: is not the same as from dig ($ONLINE_HOSTNAME)." 1>&2
-fi
+	echo "use $0 -a . . to update all (default)"
+	echo "use $0 -c . . to update certs"
+	echo "use $0 -s . . to update schul-cloud"
+	echo "use $0 -m . . to send emails via mutt to the"
+	echo ". . . . . . . people in $hostname_contacts_file"
+	echo "use $0 -i . . to update the ip in $last_hostname_file"
+	echo
+	echo "emails in the hostname contact file:"
+	cat $hostname_contacts_file
+}
 
 function certificate_update(){
-	sudo /home/$USER/bin/cert.sh $ONLINE_HOSTNAME_OLD $ONLINE_HOSTNAME
+	verb "Starting cert update"
+	sudo /home/$USER/bin/cert.sh $HOSTNAME_4_OLD $HOSTNAME_4 $HOSTNAME_6_OLD $HOSTNAME_6
+	verb "Done."
 }
+
 function schul-cloud_update(){
-	[[ -d /tmp/schul-cloud/ ]]||mkdir /tmp/schul-cloud
-	sed "s/127.0.0.1/$ONLINE_HOSTNAME/g" < ~/http/schul-cloud.html > /tmp/schul-cloud/Lustiges_YT_Video.html
+# TODO IDEA!!
+# working with hooks in bin/update_hostname.d
+# files can contain the following
+#
+# echo run the hook
+#
+# then source the files
+	verb "Starting schul-cloud update"
+	[[ -d /tmp/schul-cloud/ ]] || (
+		mkdir /tmp/schul-cloud
+		verb "generated dir /tmp/schul-cloud"
+	)
+	sed "s/127.0.0.1/$ONLINE_HOSTNAME/g" < ~/http/schul-cloud.html \
+		> /tmp/schul-cloud/Lustiges_YT_Video.html
 	echo "site is in /tmp/schul-cloud/* for schul-cloud.org"
+	verb "Done."
 }
+
 function send_mail(){
-	for i in $(cat $HOSTNAME_OTHER_FILE); do
-		mutt -s "hostname johannes" $i <<< "$(echo -e "$ONLINE_IP\n$ONLINE_HOSTNAME")"
+	verb "Starting email sending"
+	for i in $(cat $hostname_contacts_file); do
+		echo -en "$C_YELLOW==>$C_NULL ${C_BLUE}Sending to$C_NULL "
+		echo -e "$C_GREEN$i$C_NULL"
+		mutt -s "NEW HOSTNAME" $i <<muttEOF
+$IP_4
+$HOSTNAME_4
+$IP_6
+$HOSTNAME_6
+muttEOF
 	done
+	verb "Done."
+}
+
+function verb(){
+	echo -e "$C_GREEN$C_B_BLUE$@$C_NULL"
+}
+
+function ip_update(){
+	write_hostname_to_hostname_file $IP_4 $HOSTNAME_4 $IP_6 $HOSTNAME_6
 }
 
 for i in $@; do
-	case $i in #((((
+	case $i in #((((((
 		"-s") schul-cloud_update;;
 		"-m") send_mail;;
 		"-c") certificate_update;;
-		*) certificate_update;
+		"-i") ip_update;;
+		"-a")
+			certificate_update;
 			send_mail;
-			schul-cloud_update;;
+			schul-cloud_update;
+			ip_update;
+		;;
+		*) this_help;
 	esac
 done
 
-#echo "INFO: to send the new hostname and IP to the other people in $_HOSTNAME_OTHER_FILE use 'hostname_update'" 1>&2
-#echo "INFO: to create a new page /tmp/schul-cloud/* for schul-cloud.org use 'schul-cloud_update'" 1>&2
+#echo "INFO: to send the new hostname and IP to the other people in
+#--> $_HOSTNAME_OTHER_FILE use 'hostname_update'" 1>&2
+#
+#echo "INFO: to create a new page /tmp/schul-cloud/* for schul-cloud.org
+#--> use 'schul-cloud_update'" 1>&2
 #function hostname_update(){
-#	mutt -s "$HOSTNAME_OTHER_SUB" $HOSTNAME_OTHER_EMAIL <<< "$(echo -e "$ONLINE_IP\n$ONLINE_HOSTNAME")"
+#	mutt -s "$HOSTNAME_OTHER_SUB" $HOSTNAME_OTHER_EMAIL <<<
+#--> "$(echo -e "$ONLINE_IP\n$ONLINE_HOSTNAME")"
 #}
 
 # syntax
