@@ -72,7 +72,7 @@ function write_hostname_to_hostname_file(){
 	echo $4 > $last_hostname_file
 }
 
-if [[ "$HOSTNAME_4" == "$HOSTNAME_4_FB" ]]; then
+if [[ "$HOSTNAME_4" != "$HOSTNAME_4_FB" ]]; then
 	printf "${C_RED}ALERT$C_NULL IPv4 hostnames do not match!\n" 1>&2
 	printf "${C_RED} --->$C_NULL dig: $C_PURPLE%s$C_NULL\n" $HOSTNAME_4 1>&2
 	printf "${C_RED} --->$C_NULL FB.: $C_PURPLE%s$C_NULL\n" $HOSTNAME_4_FB 1>&2

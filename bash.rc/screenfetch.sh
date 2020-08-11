@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-. ~/bin/bash.rc/config.sh
-
 if [[ ! -s $screenfetch_tmp ]]; then
 	touch $screenfetch_tmp
 	~/bin/screenfetch > $screenfetch_tmp
