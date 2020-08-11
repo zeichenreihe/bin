@@ -23,8 +23,8 @@ function this_help(){
 	echo "use $0 -a . . to update all (default)"
 	echo "use $0 -c . . to update certs"
 	echo "use $0 -s . . to update schul-cloud"
-	echo "use $0 -m . . to send emails via mutt to the"
-	echo ". . . . . . . people in $hostname_contacts_file"
+	echo "use $0 -m . . to send emails via mutt " \
+		"to the people in $hostname_contacts_file"
 	echo "use $0 -i . . to update the ip in $last_hostname_file"
 	echo
 	echo "emails in the hostname contact file:"
