@@ -67,9 +67,9 @@ function write_hostname_to_hostname_file(){
 # $3 = IPv6 addr
 # $4 = IPv6 hostname
 	echo $1 > $last_hostname_file
-	echo $2 > $last_hostname_file
-	echo $3 > $last_hostname_file
-	echo $4 > $last_hostname_file
+	echo $2 >> $last_hostname_file
+	echo $3 >> $last_hostname_file
+	echo $4 >> $last_hostname_file
 }
 
 if [[ "$HOSTNAME_4" != "$HOSTNAME_4_FB" ]]; then
