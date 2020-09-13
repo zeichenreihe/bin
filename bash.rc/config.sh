@@ -35,7 +35,10 @@ export PATH="/home/$USER/bin:$PATH"
 #
 # your PS1
 #
-export PS1="$C_NULL"'[\u@\h \W]\$ '
+## NEVER use
+#export PS1="$C_NULL"'[\u@\h \W]\$ '
+## this, because bash then don't know where to put the cursor!
+export PS1='[\u@\h \W]\$ '
 
 # VIM internal shell
 [[ -n $VIM ]]&&PS1="vim $PS1"
