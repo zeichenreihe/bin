@@ -45,21 +45,22 @@ certbot certonly --email "$email" --webroot -w "$webroot_cert" -d "$newhostname"
 
 ## CREATE CONFIG FILES
 echo
-echo "== UPDATE CONFIG FILES =="
+echo -n "== UPDATE CONFIG FILES =="
 echo "ServerName ${newhostname}:80" > $ssl_config_dir/$name_config
 
 echo "SSLCertificateFile /etc/letsencrypt/live/${newhostname}/fullchain.pem" > $ssl_config_dir/$ssl_config
 echo "SSLCertificateKeyFile /etc/letsencrypt/live/${newhostname}/privkey.pem" >> $ssl_config_dir/$ssl_config
+echo "... done."
 
 ## CREATE HTML LINK
-echo
-echo "== CREATE HTML LINK =="
+echo -n "== CREATE HTML LINK =="
 echo "<a href=\"https://${newhostname}/\">https</a>" > $webroot/$linkfile
+echo "... done."
 
 ## RESTART HTTPD
-echo
-echo "== RESTART HTTPD =="
+echo -n "== RESTART HTTPD =="
 systemctl restart httpd.service
+echo "... done."
 
 ## CHECK IF ONLINE
 echo
@@ -72,7 +73,7 @@ if systemctl status httpd.service 2>/dev/null >/dev/null; then
 	echo
 	echo "== NMAP REPORT =="
 	echo "Here you can see the open ports:"
-	nmap -T5 -A "$newhostname"
+	nmap -T 5 -A "$newhostname"
 	echo "If port 443 is open everything is ok."
 	if [[ ! -s "$webroot/$file_on_server" ]];
 	then
