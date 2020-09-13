@@ -74,7 +74,7 @@ esac
 
 echo
 verb "== Please restart the following processes =="
-echo -e "$C_RED$C_B_BLUE"
+echo -ne "$C_RED$C_B_BLUE"
 show_update_proc
 echo -e "$C_NULL"
 
