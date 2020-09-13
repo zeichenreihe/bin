@@ -1,6 +1,7 @@
 Host birne
-	HostName 192.168.2.115
-	User     pi
+	HostName 192.168.2.101
+#	User     pi
+	User	ubuntu
 
 Host pixy
 	Hostname 127.0.0.1
