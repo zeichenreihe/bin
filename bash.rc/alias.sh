@@ -48,22 +48,22 @@ complete -W "attach \
 # 3 char
 alias cls=clear
 function dns(){
-	local a b c x
-	for a in "$@"
+	local this_arg this_dnstype query_item x_flag
+	for this_arg in "$@"
 	do
-		x="-x";
-		case ${a##*.} in #((
+		x_flag="-x";
+		case ${this_arg##*.} in #((
 			"ip"|"ip4"|"ipv4"|"ip6"|"ipv6")
-				c=${a%.*}
+				query_item="${this_arg%.*}"
 			;;
 			*)
-				c=$a
-				x=""
+				query_item="$this_arg"
+				x_flag=""
 			;;
 		esac
-		for b in $DNS_TYPES
+		for this_dnstype in $DNS_TYPES
 		do
-			dig $b +noall +answer $x $c
+			dig "$this_dnstype" "+noall" "+answer" "$x_flag" "$query_item"
 		done
 	done
 }
@@ -100,17 +100,17 @@ alias image="fbi"
 alias lsblk="lsblk -af"
 
 # 6 char
-alias bashrc=". ~/.bashrc"
-alias brexit="cd; sudo clear ; screenfetch ; make update"
-alias brexit_hib="make hib; exit"
-alias brexit_off="make off; exit"
+alias bashrc=". ~/bin/bashrc"
+alias brexit="cd; sudo clear ; screenfetch ; update"
+alias brexit_hib="sudo systemctl hibernate; exit"
+alias brexit_off="sudo shutdown; exit"
 alias startx="startx 2>/dev/null >/dev/null; unset DISPLAY"
 function qrcode(){
 	curl -F-=\<- qrenco.de <<< "$@"
 }
 
 # 7 char
-alias vimbash="vim ~/.bashrc && . ~/.bashrc"
+alias vimbash="vim ~/bin/bashrc ~/bin/bash.rc/*"
 alias minicom="sudo minicom -D /dev/ttyS0"
 function rainbow(){
 	for i in \
@@ -126,23 +126,23 @@ function rainbow(){
 	echo
 }
 function git_vor(){
-	echo $[
+	echo "$[
 		$(git shortlog --summary | \
 			awk '{print $1}'
 		) - $(git shortlog --summary origin/master | \
 			awk '{print $1}'
 		)
-	]
+	]"
 }
 function weather(){ 
 	if [[ "$#" == 1 ]]; then
-		curl wttr.in/$1
+		curl "wttr.in/$1"
 	else
-		local a
-		for a in "$@"
+		local item
+		for item in "$@"
 		do
-			echo $a;
-			curl wttr.in/$a 2> /dev/null | \
+			echo "$item"
+			curl "wttr.in/$item" 2> /dev/null | \
 				head -7 | \
 				tail -5
 		done
@@ -153,46 +153,45 @@ function weather(){
 function dns_xxxx(){
 	for i in {1..255}
 	do
-		dns $i.$i.$i.$i.ip
+		dns "$i.$i.$i.$i.ip"
 	done
 }
-
-
-
 
 # 9 char
 alias sudo_edit="sudo EDITOR=vim visudo"
 function read_code(){
 	# read code
-	# $1=to line (0=all)
-	# $2-number of lines (0=all)
-	# rest - files to read
+	# $1 = to line (0=all)
+	# $2 = number of lines (0=all)
+	# rest = files to read
 	if [[ "$1" == "0" && "$2" == "0" ]];
 	then
 		shift 2
 		espeak -bg2 -s 150  -k2 -v de --punct=\
 			"();{}[],.\"+*#'/-:=&\!_ \n<>|^\$\\@µ€~" \
-			"$(cat $@)" 2>/dev/null
+			"$(cat "$@")" 2>/dev/null
 	else
 		local a="$1"
 		local b="$2"
 		shift 2
 		espeak -bg2 -s 150  -k2 -v de --punct=\
 			"();{}[],.\"+*#'/-:=&\!_ \n<>|^\$\\@µ€~" \
-			"$(cat $@ | head -$a | tail -$b)" 2>/dev/null
+			"$(cat "$@" | head "-$a" | tail -"$b")" 2>/dev/null
 	fi
 }
 
 # 10+ char
-function prime_check(){ # check if a number is prime
-	openssl prime $@ | sed -e "s/[()isrmeot]//g" | awk '{print $3 " " $2}'
+function prime_check(){
+	openssl prime "$@" | \
+	sed -e "s/[()isrmeot]//g" | \
+	awk '{print $3 " " $2}'
 }
-function random_number(){ # generate a random number
+function random_number(){
 	head -c1 /dev/urandom | \
 	od -An -vtu1 | \
 	tr -d ' '
 }
-function show_update_proc(){ # show all proc that need to be restarted
+function show_update_proc(){
 	lsof | \
 	grep 'DEL.*lib' | \
 	cut -f 1 -d ' ' | \
