@@ -20,6 +20,9 @@ au BufReadPost *
 " allow only 72 character for email
 au BufRead /tmp/mutt-* set tw=72
 
+" jump to first line in COMMITs
+au BufRead */COMMIT_EDITMSG exe "normal! gg"
+
 " enable mouse mode
 set mouse=a
 
