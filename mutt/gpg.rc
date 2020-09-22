@@ -1,9 +1,13 @@
+# GPG config, not from me, LICENSE: ????
+# from AL (from wiki description)
+
+# syntax
+# vim: ts=8 sts=8 sw=8 noet si syntax=muttrc
+
+
 # -*-muttrc-*-
 #
 # Command formats for gpg.
-#
-# Some of the older commented-out versions of the commands use gpg-2comp from:
-#   http://70t.de/download/gpg-2comp.tar.gz
 #
 # %p    The empty string when no passphrase is needed,
 #       the string "PGPPASSFD=0" if one is needed.
@@ -38,12 +42,6 @@
 # line and replace the keyid with your own.
 #
 # set pgp_default_key="0x9968995FA8C9D1B6"
-
-# If you have a separate signing key, or your key _only_ has signing
-# capability, uncomment this line and replace the keyid with your
-# signing keyid.
-#
-# set pgp_sign_as="0x9968995FA8C9D1B6"
 
 
 # Section B: Commands
@@ -94,22 +92,6 @@ set pgp_list_pubring_command="gpg --no-verbose --batch --quiet --with-colons --w
 # note: the second --with-fingerprint adds fingerprints to subkeys
 set pgp_list_secring_command="gpg --no-verbose --batch --quiet --with-colons --with-fingerprint --with-fingerprint --list-secret-keys %r"
 
-# fetch keys
-# set pgp_getkeys_command="pkspxycwrap %r"
-
-# pattern for good signature - may need to be adapted to locale!
-
 set pgp_good_sign="^gpgv?: Good signature from "
-
-# OK, here's a version which uses gnupg's message catalog:
-# "" (eines) am ende von nächster Zeile entfernt.
-# set pgp_good_sign="`gettext -d gnupg -s 'Good signature from "' | tr -d '"'`
-
-# This version uses --status-fd messages
-set pgp_good_sign="^\\[GNUPG:\\] GOODSIG"
-
-# pattern to verify a decryption occurred
-# This is now deprecated by pgp_check_gpg_decrypt_status_fd:
-# set pgp_decryption_okay="^\\[GNUPG:\\] DECRYPTION_OKAY"
 set pgp_check_gpg_decrypt_status_fd
 
