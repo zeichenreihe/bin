@@ -1,74 +1,78 @@
-## USER SETTINGS
-source ~/.mutt/sec.rc
+#    .muttrc file
+#    Copyright (C) 2020  Johannes Schmatz <johannes_schmatz@gmx.de>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-## USER ALIASES
-source ~/.mutt/alias.rc
+## USER SETTINGS
+source ~/.mutt/user_settings.rc
 
 ## COLOR SETTINGS
-color normal green default
-color indicator white blue
-color status black cyan
-color message white blue
+color normal     green   default
+color indicator  white   blue
+color status     black   cyan
+color message    white   blue
 color hdrdefault magenta default
-color attachment cyan default
-color quoted blue default
-color markers white magenta
-
-#color body brightblue black "(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
-#color body brightblue black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
-#color body brightblue black "news:[^ \">\t\r\n]*"
+color attachment cyan    default
+color quoted     blue    default
+color markers    white   magenta
 
 ## HEADER SETTINGS
 set edit_headers=yes
 unset user_agent
-my_hdr X-Info: Keep It Simple, Stupid.
-my_hdr X-Operating-System: `uname -s`, kernel `uname -r`
-my_hdr X-Message-Flag: WARNING!! Outlook sucks
 my_hdr User-Agent: Every email client sucks, this one just sucks less.
-my_hdr X-PGP-Key: https://`echo $ONLINE_HOSTNAME`/home/key/johannes.gpg
-my_hdr X-Arch-Linux: mutt tmux vim linux grub firefox xfce4
-my_hdr X-Mailer: mutt
+my_hdr X-Info: Keep It Simple, Stupid.
+my_hdr X-Message-Flag: WARNING!! Outlook sucks
+my_hdr X-PGP-Key: https://`echo $HOSTNAME_4`/home/key/johannes.gpg
+my_hdr X-Mailer: mutt on `uname -rs`
 
 unset imap_passive
-set editor         = `echo \$EDITOR`
-set imap_user      = $my_email
-set imap_pass      = $my_passwd
-set folder         = imaps://$my_imap/
-set spoolfile      = +INBOX
-mailboxes          = +INBOX
-set mail_check 	   = 20
-set imap_keepalive = 5
-set realname       = $my_name
-set from           = $my_email
-set use_from       = yes
-set smtp_url       = smtps://$my_email@$my_smtp
-set smtp_pass      = $my_passwd
-set ssl_starttls   = yes
-set ssl_force_tls  = yes
-set send_charset   = $my_charset
-set mailcap_path   = ~/.mutt/mailcap
-auto_view text/html application/pdf
-alternative_order text/plain text/html
+set editor       = `echo \$EDITOR` # the user can set $EDITOR...
+set spoolfile    = +INBOX
+mailboxes        = +INBOX
+set use_from     = yes
+set index_format = "%4C %Z %{%b %d} %-15.15L %-4.4y (%4c) %s"
 
-set sort = "threads"
-set strict_threads = no
+## LANG=DE:
+	set attribution  = "Hallo %v,\n\n\n@@@ Am %d,\n@@@ schrieb %n folgendes:"
+	set date_format  = "%A, dem %d. %b %Y um %T%z"
+##
+## LANG=EN: # TODO: (en not complete)
+#	set attribution  = "Hello %v,\n\n\nOn %d, %n wrote:"
+#	set date_format  = "%A, the %d. %b %Y at %T%z"
+##
 
-# show the user tags
-#set index_format="%4C %Z %{%b %d} %-15.15L %-4.4y (%?l?%4l&%4c?) %s"
-set index_format="%4C %Z %{%b %d} %-15.15L %-4.4y (%4c) %s"
-
-#bind index,pager 
-
-bind index,pager k previous-entry
-bind index,pager j next-entry
-bind index,pager g noop
-bind index,pager \Cu half-up
-bind index,pager \Cd half-down
-bind pager gg top
-bind index gg first-entry
-bind pager G bottom
-bind index G last-entry
+# vim style key bindings
+bind index,pager k          previous-entry
+bind index,pager j          next-entry
+bind index       <PageUp>   previous-page
+bind pager       <PageUp>   previous-undeleted
+bind index       <PageDown> next-page
+bind pager       <PageDown> next-undeleted
+bind pager       <Up>       previous-line
+bind pager       <Down>     next-line
+bind pager                previous-line # ^? = <C-v> <Bs> in vim, real bs
+bind index,pager <Left>     half-up
+bind index,pager <Right>    half-down
+bind pager       gg         top
+bind index       gg         first-entry
+bind pager       G          bottom
+bind index       G          last-entry
+bind index,pager g          what-key
 
 ## GPG
-source ~/.mutt/gpg.rc
+source ~/bin/mutt/gpg.rc
 set fcc_clear = yes
+
+# syntax
+# vim: ts=8 sts=8 sw=8 noet si syntax=muttrc
