@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Online Hostname has changed from p5B041A81.dip0.t-ipconnect.de. to p5DEE4797.dip0.t-ipconnect.de.
-
 ## CONFIG ##
 email="johannes_schmatz@gmx.de"
 webroot="/srv/http"
