@@ -30,7 +30,9 @@ export GIT_EDITOR="$EDITOR"
 #
 # PATH
 #
-export PATH="/home/$USER/bin:$PATH"
+PATH="/home/$USER/bin:$PATH:"
+# this replaces all doubled exitences:
+export PATH="$(sed -e 's/:/\n/g' <<< "$PATH" | uniq | awk '{printf $0":"}' | sed -e s/:\$//)"
 
 #
 # your PS1

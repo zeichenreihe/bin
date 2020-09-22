@@ -94,6 +94,36 @@ function hist(){ # print the $1 most often used commands, 0=10 most used
 #	nl | \
 #	less
 }
+function PATH(){
+	echo "$PATH"
+
+	### 0: nice sed/uniq/awk/sed solution:
+	export PATH="$(
+		echo $PATH | \
+		sed -e 's/:/\n/g' | \
+		uniq | \
+		awk '{printf $0":"}' | \
+		sed -e s/:\$//
+	)"
+
+	### 1: Ugly bash solution: NOT USE!!!
+#	local data_array=()
+#	local i j
+#	for i in ${PATH//:/ }
+#	do
+#		for j in "${!data_array[@]}"
+#		do
+#			[[ "${data_array[j]}" == "$i" ]] && \
+#				i="/dev/null"
+#		done
+#		[[ "/dev/null" != "$i" ]] && \
+#			data_array=( "${data_array[@]}" "$i" )
+#	done
+#	data_array="${data_array[@]}:"
+#	export PATH="${data_array// /:}"
+
+	echo "$PATH"
+}
 
 # 5 char
 alias image="fbi"
