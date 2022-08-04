@@ -7,3 +7,6 @@ Host pixy
 	Hostname 127.0.0.1
 	User     johannes
 
+Host avocado
+	Hostname 192.168.2.142
+	User     zeichenreihe
