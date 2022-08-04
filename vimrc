@@ -29,6 +29,7 @@ set mouse=a
 " enable dark mode if in X11
 if $DISPLAY != ""
 	set background=dark
+	colorscheme industry
 else
 	set background=light
 endif
