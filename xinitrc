@@ -46,6 +46,11 @@ if test $(tty) == /dev/tty1;
 then
 #	xsetroot -cursor_name X_cursor
 # see https://tronche.com/gui/x/xlib/appendix/b/
+
+	if [[ "$HOSTNAME" != pixy ]]; then
+		xrandr --output eDP-1 --right-of HDMI-1
+	fi
+
 	exec i3
 else
 	# set postition of monitors
