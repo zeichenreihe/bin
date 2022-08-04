@@ -1,0 +1,43 @@
+# https://ss64.com/bash/syntax-inputrc.html
+
+# What happens on terminal bell ringing
+# - none
+# - visible
+# - audible (default)
+set bell-style audible
+
+# What starts a comment
+# - # (default)
+set comment-begin #
+
+# Ignore case on completion
+# - on
+# - off (default)
+set completion-ignore-case on
+
+# When set to greater than zero, common prefixes longer than is value
+# are replaced with an ellipsis when displaying completions
+# - 0 (default??)
+set completion-prefix-display-length 0
+
+# at what value to ask for if you want to see the completion options
+# - 100 (default)
+set completion-query-items 300
+
+#...
+
+# fix for st
+set enable-keypad On
+
+# expand tilde before doing word completion
+# - on
+# - off (default)
+set expand-tilde Off
+
+
+
+# gentoo history on page up down
+"\e[5~": history-search-backward
+"\e[6~": history-search-forward
+
+
