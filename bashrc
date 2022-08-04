@@ -27,7 +27,9 @@
 #if [[ "$(wget http://42.org -O - -o /dev/null|head -1)" == "<HTML><HEAD>" ]];
 if true;
 then
+if [[ "$HOSTNAME" == "pixy" ]]; then
 	. ~/bin/bash.rc/ip.sh
+fi
 else
 	export ONLINE="not_online"
 	export IP_4="127.0.0.1"
@@ -44,7 +46,8 @@ fi
 (
 	[[ "$(tty | head -c8)" == "/dev/tty" ]] ||
 	[[ "$(tty | head -c8)" == "/dev/pts" ]]
-) && cat $screenfetch_tmp 
+) && [[ "$HOSTNAME" == "pixy" ]] && \
+cat $screenfetch_tmp 
 
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
