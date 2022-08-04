@@ -4,7 +4,7 @@ Host birne
 	User	ubuntu
 
 Host pixy
-	Hostname 127.0.0.1
+	Hostname 192.168.2.42
 	User     johannes
 
 Host avocado
