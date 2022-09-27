@@ -18,6 +18,7 @@
 # 1 char
 alias o="less -r"
 alias q="exit"
+alias s="systemctl"
 
 # 2 char
 alias ls='ls --color=auto'
@@ -47,11 +48,13 @@ complete -W "attach \
 
 # 3 char
 alias cls=clear
+alias tig="git log --graph --oneline --all --color --decorate | less -R"
+alias dir="dirs | sed $'s/^/\\e[32m/;s/\\\\s/\\\\n/g' | sed $'1,1s/$/\\e[0m/'"
 function dns(){
 	local this_arg this_dnstype query_item x_flag
 	for this_arg in "$@"
 	do
-		x_flag="-x";
+		x_flag="-x ";
 		case ${this_arg##*.} in #((
 			"ip"|"ip4"|"ipv4"|"ip6"|"ipv6")
 				query_item="${this_arg%.*}"
@@ -63,7 +66,7 @@ function dns(){
 		esac
 		for this_dnstype in $DNS_TYPES
 		do
-			dig "$this_dnstype" "+noall" "+answer" "$x_flag" "$query_item"
+			dig "$this_dnstype" "+noall" "+answer" "$x_flag$query_item"
 		done
 	done
 }
@@ -74,6 +77,7 @@ alias grep="grep --color=auto"
 alias BOFH="telnet towel.blinkenlights.nl 666 2>/dev/null | tail -3 | head -2 "
 alias motd="~/hacks/motd/new.sh"
 alias sudi="sudo -s"
+alias hell="git status; git log --graph --oneline --all --color --decorate | head -20"
 function hist(){ # print the $1 most often used commands, 0=10 most used
 	eval history | \
 	sed 's/[^ \t]\+//; s/#/# /g; s/=.*/= /; s/;/ /g' | \
@@ -137,6 +141,9 @@ alias brexit_off="sudo shutdown; exit"
 alias startx="startx 2>/dev/null >/dev/null; unset DISPLAY"
 function qrcode(){
 	curl -F-=\<- qrenco.de <<< "$@"
+}
+function jshell(){
+	JAVA_HOME=/usr/lib/jvm/java-18-openjdk/ /usr/lib/jvm/java-18-openjdk/bin/jshell
 }
 
 # 7 char
