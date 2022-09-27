@@ -49,6 +49,7 @@ then
 
 	if [[ "$HOSTNAME" != pixy ]]; then
 		xrandr --output eDP-1 --right-of HDMI-1
+		flameshot &
 	fi
 
 	exec i3
@@ -72,3 +73,5 @@ else
 	# start the main window
 	exec xterm -geometry 80x48+0+0 -title login
 fi
+# TODO: add this stuff to the hotkeys
+#xrandr --query --output eDP-1 --brightness 0.5

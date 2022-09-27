@@ -42,6 +42,10 @@ export PATH="$(sed -e 's/:/\n/g' <<< "$PATH" | uniq | awk '{printf $0":"}' | sed
 ## this, because bash then don't know where to put the cursor!
 export PS1='[\u@\h \W]\$ '
 
+#if [[ "$TERM" == "tmux-256color" ]]; then
+#	export PS1='\e[1;34m[\e[33m\u\e[34m@\e[33m\h \e[36m\W\e[34m]\e[31m$\e[0m '
+#fi
+
 # VIM internal shell
 [[ -n $VIM ]]&&PS1="vim $PS1"
 
