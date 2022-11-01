@@ -143,7 +143,7 @@ function qrcode(){
 	curl -F-=\<- qrenco.de <<< "$@"
 }
 function jshell(){
-	JAVA_HOME=/usr/lib/jvm/java-18-openjdk/ /usr/lib/jvm/java-18-openjdk/bin/jshell
+	JAVA_HOME=/usr/lib/jvm/java-19-openjdk/ /usr/lib/jvm/java-19-openjdk/bin/jshell
 }
 
 # 7 char
@@ -233,6 +233,13 @@ function show_update_proc(){
 	grep 'DEL.*lib' | \
 	cut -f 1 -d ' ' | \
 	sort -u
+}
+function dont_forget(){
+	LC_ALL=C git status | \
+	sed -Ee '/deleted/!d;s/\sdeleted:\s*//;s#^mappings/(.+)/##;s/\.mapping//;s#^#net/minecraft/#' | \
+	while read i;
+		do grep --color -r -w -s $i mappings
+	done
 }
 
 # two functions to move int main to some places
