@@ -105,6 +105,9 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
+# launch flameshot
+bindsym $mod+b exec --no-startup-id "flameshot gui"
+
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1"
@@ -189,7 +192,9 @@ client.background	#202030
 # finds out, if available)
 bar {
 	position top
-        status_command i3status
+#        status_command i3status
+	status_command i3status-rs
+#	font pango:FreeSansMono, FontAwesome
 }
 
 exec --no-startup-id xsetroot -def -solid "#006080" -cursor_name X_cursor
