@@ -33,7 +33,7 @@ unset user_agent
 my_hdr User-Agent: Every email client sucks, this one just sucks less.
 my_hdr X-Info: Keep It Simple, Stupid.
 my_hdr X-Message-Flag: WARNING!! Outlook sucks
-my_hdr X-PGP-Key: https://`echo $HOSTNAME_4`/home/key/johannes.gpg
+#my_hdr X-PGP-Key: https://`echo $HOSTNAME_4`/home/key/johannes.gpg
 my_hdr X-Mailer: mutt on `uname -rs`
 
 unset imap_passive
