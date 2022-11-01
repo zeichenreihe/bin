@@ -1,0 +1,105 @@
+# i3status-rust config file
+# symlinked from ~/.config/i3status-rs/config.toml
+
+# theme and icons settings
+theme = "solarized-dark"
+icons = "awesome5"
+
+# display the uptime of the syste
+[[block]]
+block = "uptime"
+
+# display the used disk space:
+# <icon> 37GB / 906GB (896 free)
+[[block]]
+block = "disk_space"
+interval = 20
+format = "{icon} {used} / {total} ({free} free)"
+
+# display memory and swap usage
+# <icon> 56% (8.5GB/15GB) + 10% (3.2GB/32GB)
+# <icon> mem: 6.7GB free + swap:  32GB free
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{mem_used_percents:2} ({mem_used}/{mem_total:2}) + {swap_used_percents:2} ({swap_used}/{swap_total:2})"
+format_swap = "mem: {mem_avail} free + swap: {swap_free} free"
+
+[[block]]
+block = "cpu"
+interval = 1
+format = "{utilization} avg, {frequency}"
+
+# display the system load average:
+# 1/5/15min avg: 0.9 0.8 0.9
+[[block]]
+block = "load"
+interval = 1
+format = "1/5/15min avg: {1m} {5m} {15m}"
+
+# backlight controls
+#[[block]]
+#block = "backlight"
+#[[block]]
+#block = "xrandr"
+#icons = true
+#resolution = true
+
+# display the sound block
+# 36%
+[[block]]
+block = "sound"
+show_volume_when_muted = true
+headphones_indicator = true
+
+# display the cpu temp
+# 28°..49°..59°
+[[block]]
+block = "temperature"
+collapsed = false
+format = "{min}..{average}..{max}"
+idle = 25
+info = 65
+warning = 85
+
+# display the battery state
+[[block]]
+block = "battery"
+if_command = "test -e /sys/class/power_supply/BAT0"
+format = "{percentage:2} {time}"
+
+# currently not working because no dbus service for bluez
+#[[block]]
+#block = "bluetooth"
+#mac = "C8:09:A8:26:39:B8"
+#hide_disconnected = true # uncomment later
+
+# display a block about the wlan connection
+[[block]]
+block = "net"
+device = "wlan0"
+format = "{ssid} {signal_strength} {speed_up;K} {speed_down;K}"
+format_alt = "{ipv6} {ip} {frequency}"
+
+# display a block about the ethernet connection
+[[block]]
+block = "net"
+device = "enp*"
+format = "{speed_up;K} {speed_down;K}"
+format_alt = "{ipv6} {ip}"
+
+# displays a music block
+# currently not working, would require some program to attach mocp to dbus
+#[[block]]
+#block = "music"
+#mocp --format "%state %file"
+
+# display the current time
+# Donnerstag 2022-10-06 22:51:56 (+02:00)
+[[block]]
+block = "time"
+interval = 5
+locale = "de_DE"
+format = "%A %Y-%m-%d %H:%M:%S (%:z)"
+
+
