@@ -48,6 +48,7 @@ then
 # see https://tronche.com/gui/x/xlib/appendix/b/
 
 	if [[ "$HOSTNAME" != pixy ]]; then
+		xrandr --output HDMI-1 --primary
 		xrandr --output eDP-1 --right-of HDMI-1
 		flameshot &
 	fi
