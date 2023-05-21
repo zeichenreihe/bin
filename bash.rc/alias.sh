@@ -70,6 +70,21 @@ function dns(){
 		done
 	done
 }
+alias ghc="ghc -dynamic"
+function i3r(){
+	#res="$(i3 $@ 2>&1 )"
+	#echo "$res"
+	#tail -n -1 <<< "$res" | \
+	i3 $@ 2>&1 | \
+		tail -n -1 | \
+		json_pp -json_opt pretty | \
+		sed -E '/^\s{4}/!d;s/^\s*//;s/,$//;s/^"input"/"_error_input_"/' | \
+		sort | \
+		sed -E "/^\"error\"/s/(['>],|:) (<|')/\1\n\t\2/g"
+
+#17.11.2022 16:20:20 - Additional arguments passed. Sending them as a command to i3.
+#[{"success":false,"parse_error":true,"error":"Expected one of these tokens: 'normal', 'pixel', 'toggle', 'none', '1pixel'","input":"borders pixel","errorposition":"      ^^^^^^^"}]
+}
 
 # 4 char
 alias moon='weather "moon?lang=de"'
@@ -143,7 +158,7 @@ function qrcode(){
 	curl -F-=\<- qrenco.de <<< "$@"
 }
 function jshell(){
-	JAVA_HOME=/usr/lib/jvm/java-19-openjdk/ /usr/lib/jvm/java-19-openjdk/bin/jshell
+	JAVA_HOME=/usr/lib/jvm/java-20-openjdk/ /usr/lib/jvm/java-20-openjdk/bin/jshell
 }
 
 # 7 char
@@ -241,6 +256,23 @@ function dont_forget(){
 		do grep --color -r -w -s $i mappings
 	done
 }
+function mc_1120_item_dupe(){
+	# to use: have inventory full of items that can be used in a crafting recipe
+	# then open inv + recipe view, pick up the item you want to dupe and move to the outside (where items are dropped)
+	# run this, wait for it to drop the item, after it threw it out, move mouse over a valid recipe
+	
+	# time to get back into mc
+	sleep 2
+
+	# throw out the item
+	xdotool click 1
+
+	# it takes 40gt (2s) to pick up the item, it works best if the slots of the crafting grid are already filled
+	read -t 1.7
+
+	# spam click the recipe while picking it up
+	xdotool click --repeat 2000 --delay 0.5 1
+}
 
 # two functions to move int main to some places
 function arduino-cli_move_int_main_to_sketch(){
@@ -250,5 +282,63 @@ function arduino-cli_move_int_main_to_arduino_folder(){
 	~/.arduino15/own_modified_version/undo_move.sh
 }
 
+
+function get_window_id(){
+	xwininfo -name "$1" | sed -Ee '/Window id: /!d;s/^xwininfo: Window id: ([0-9A-Fa-fx]+) ".*"$/\1/'
+}
+
+# call it like this:
+# compare_distances a 123 123 123 b 127 127 127 c 122 122 122
+# it will print:
+# a to c: 123
+# b to c: 123
+function compare_distances(){
+	dc -e "10k $2 $3 $4 $6 $7 $8 ${10} ${11} ${12} dScSd dScSd dScSd SbSbSb SaSaSa [$1 to $9: ]P LaLc-d* LaLc-d* LaLc-d* ++vp [$5 to $9: ]P LbLd-d* LbLd-d* LbLd-d* ++vp"
+}
+
+function rgb_true_color_test(){
+	awk -E - <<AWK
+
+function hue_in_range(min, hue, max) {
+	max_ = max % 6;
+	if (max == 6) max_ = 6;
+	return 256 * (min % 6) <= hue && hue < 256 * max_;
+}
+	
+function hue2rgb_component(hue, offset) {
+	value = hue % 256;
+
+	if (hue_in_range(offset, hue, offset + 1) || hue_in_range(offset + 1, hue, offset + 2)) {
+		return 0;
+	} else if (hue_in_range(offset + 3, hue, offset + 4) || hue_in_range(offset + 4, hue, offset + 5)) {
+		return 255;
+	} else if (hue_in_range(offset + 2, hue, offset + 3)) {
+		return value;
+	} else if (hue_in_range(offset + 5, hue, offset + 6)) {
+		return 255 - value;
+	}
+}
+BEGIN{
+	n = $COLUMNS;
+	chars_per_line = 0;
+	for (hue = 0; hue < 256 * 6; hue += 1) {
+		value = hue % 256;
+		
+		r = hue2rgb_component(hue, 2);
+		g = hue2rgb_component(hue, 4);
+		b = hue2rgb_component(hue, 0);
+		#printf "%d,%d;", hue,r;
+		printf "\033[48;2;%d;%d;%dm \033[0m", r,g,b;
+
+		chars_per_line++;
+		if (hue != 0 && chars_per_line % n == 0) printf "\n";
+	}
+	printf "\n";
+}
+AWK
+}
+function jfr2flame() {
+	JAVA_HOME=/usr/lib/jvm/java-17-openjdk /usr/lib/jvm/java-17-openjdk/bin/java -cp /opt/async-profiler/build/converter.jar jfr2flame $1 $2
+}
 # syntax
 # vim: ts=8 sts=8 sw=8 noet si syntax=bash
