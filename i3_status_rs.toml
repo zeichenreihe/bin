@@ -57,7 +57,7 @@ headphones_indicator = true
 # 28°..49°..59°
 [[block]]
 block = "temperature"
-format = " $icon $min $average $max"
+format = " $icon $min $average $max "
 format_alt = " $icon "
 idle = 25
 info = 65
@@ -67,7 +67,7 @@ warning = 85
 [[block]]
 block = "battery"
 if_command = "test -e /sys/class/power_supply/BAT0"
-format = " $icon $percentage $time"
+format = " $icon $percentage $time "
 
 # currently not working because no dbus service for bluez
 #[[block]]
