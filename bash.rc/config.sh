@@ -15,6 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+export XDG_CONFIG_HOME="$HOME/.config"
+export TERMINAL="alacritty"
+
 #
 # NAME and EMAIL
 #
@@ -52,6 +55,19 @@ export PS1='[\u@\h \W]\$ '
 # EMOJI (unncomment to use)
 #. ~/bin/bash.rc/emoji.sh
 #[[ "$DISPLAY" != "" ]]&&PS1='[\u@\h \W]$(RANDOM_EMOJI $?)\$ '
+
+#
+# FZF
+#
+export FZF_DEFAULT_OPTS='
+ --height 60%
+ --layout reverse
+ --border
+ --color=fg:#ffffff,bg:#134242,hl:#ff8800
+ --color=fg+:#ffff00,bg+:#134242,hl+:#ff8800
+ --color=info:#ff0000,prompt:#d7005f,pointer:#00ffc4
+ --color=marker:#ff0000,spinner:#ff5500,header:#000000'
+#-m
 
 #
 # '/tmp' results in 'cd /tmp'
@@ -94,8 +110,8 @@ case $HOSTNAME in #(((
 	"birne")
 		export IP_DEV="eth0"
 	;;
-	"kirsche")
-		export IP_DEV="wlan1"
+	"avocado")
+		export IP_DEV="wlan0"
 	;;
 esac
 
