@@ -42,18 +42,17 @@ floating_modifier $mod
 
 # start a terminal
 #bindsym $mod+Return exec --no-startup-id "xterm -u8"
-bindsym $mod+Return exec --no-startup-id "st -t 'not xterm'"
+bindsym $mod+Return exec --no-startup-id "alacritty"
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
-# A more modern dmenu replacement is rofi:
-# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+# A modern program launcher is rofi:
+#bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+bindsym $mod+d exec --no-startup-id "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+#bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
 bindsym $mod+j focus left
@@ -66,6 +65,14 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+
+# mouse change focus
+#bindsym --release --whole-window $mod+button4 mode "mouse_focus"
+#bindsym --release --whole-window $mod+button5 mode "mouse_focus"
+#mode "mouse_focus" {
+#	bindsym --release --whole-window $mod+button2 move left
+#	bindsym --release --border --whole-window $mod+button5 focus right
+#}
 
 # move focused window
 bindsym $mod+Shift+j move left
@@ -106,7 +113,12 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 # launch flameshot
-bindsym $mod+b exec --no-startup-id "flameshot gui"
+bindsym --release $mod+b exec --no-startup-id "flameshot gui"
+
+bindsym $mod+n exec --no-startup-id "sleep 1; xdotool click --repeat 500 --delay 8 1"
+
+# tiling drag, allow dragging the window with modifier key hold, or on the titlebar
+tiling_drag modifier titlebar
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -144,6 +156,12 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# keys to move workspaces to other screens
+bindsym $mod+Shift+u move workspace to output left
+bindsym $mod+Shift+i move workspace to output down
+bindsym $mod+Shift+o move workspace to output up
+bindsym $mod+Shift+p move workspace to output right
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -197,4 +215,9 @@ bar {
 #	font pango:FreeSansMono, FontAwesome
 }
 
-exec --no-startup-id xsetroot -def -solid "#006080" -cursor_name X_cursor
+#exec --no-startup-id xsetroot -def -solid "#006080" -cursor_name X_cursor
+
+workspace 1 output primary
+workspace 2 output primary
+workspace 3 output eDP-1 primary
+
